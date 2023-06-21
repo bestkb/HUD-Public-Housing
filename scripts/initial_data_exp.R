@@ -1,6 +1,7 @@
 library(tidyverse)
 library(readxl)
 library(tidycensus)
+library(tigris)
 
 hud_data_2019 <- read_xlsx("data/public-housing-physical-inspection-scores-2019.xlsx")
 
@@ -20,6 +21,7 @@ hud_data_2019 %>%
 ## distance to nearest flood plane ###
 ## block group 
 
+#########################################################################################3
 ## pull in 2021 data 
 hud_data <- read_xlsx("data/public_housing_physical_inspection_scores_0321.xlsx")
 
@@ -60,8 +62,32 @@ hud_w_flood <- hud_w_flood %>%
 lm_simple <- lm(INSPECTION_SCORE ~ NEAR_DIST, data = hud_w_flood)
 summary(lm_simple)
 
-
+## previous disasters in county 
+## block group sociodemographic information 
+## look at Meri and Qing's public housing for socioeconomic characteristics
+## income brackets, people in poverty, disability, race
+## control for number of housing units -- from HUD 
 ############# pull in socioeconomic data ###############################
+
+
+##1 spatially join to county and block group ### 
+
+hud_w_flood <- hud_w_flood %>%
+  mutate(county_FIPS = str_c(STATE_CODE, COUNTY_CODE))
+
+
+county_hazard_data <- read_csv("data/county_hazard variables.csv") %>%
+  select(c(fips, hurrexpo)) %>% 
+  unique()
+county_hazard_data$fips <- str_pad(county_hazard_data$fips, 5, pad="0")
+
+
+hud_w_flood <- hud_w_flood %>%
+  left_join(county_hazard_data, by = c("county_FIPS" = "fips")) %>%
+  filter(STATE_NAME != "PR" & STATE_NAME != "VI" & STATE_NAME != "GU")
+
+  
+
 
 
 
