@@ -86,11 +86,143 @@ hud_w_flood <- hud_w_flood %>%
   left_join(county_hazard_data, by = c("county_FIPS" = "fips")) %>%
   filter(STATE_NAME != "PR" & STATE_NAME != "VI" & STATE_NAME != "GU")
 
-  
+
+hud_w_flood$census_code <- apply(hud_w_flood, 1, 
+                                 function(row) 
+                                   call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+
+hud_w_flood$census_code <- as.character(hud_w_flood$census_code)
+hud_w_flood <- hud_w_flood %>%
+  mutate(block_group = substr(census_code, 1, 12))
+
+
+##################### read census data for those block groups ############# 
+
+
+#use ACS to pull in race, age
+census_api_key("ff5d487d0a2a22c658bf319ba136c27db32aa0be", install = TRUE, 
+               overwrite = TRUE)
+v20 <- load_variables(2020, "acs5", cache = TRUE)
+View(v20)
+
+other_census_blockgroup <- get_acs(survey = "acs5", geography = "block group", 
+                                   variables = c(age = "B01002_001",
+                                                 income =  "B19013_001",
+                                                 prop_value = "B25077_001",
+                                                 public_assistance = "B19057_001",  
+                                                 poverty = "B17010_001", 
+                                                 vehicles = "B25044_001",
+                                                 renter = "B25003_003",
+                                                 owner = "B25003_002",
+                                                 total_white = "B03002_003",
+                                                 total_black = "B03002_004",
+                                                 total_hispanic = "B03002_012",
+                                                 total_pop = "B01003_001",
+                                                 disability = "B18101_001"), 
+                                   state = c(unique(hud_w_flood$STATE_CODE)),
+                                   year = 2020)
+
+
+
+other_census_wider <- other_census_blockgroup%>% pivot_wider(id_cols = "GEOID",
+                                                             names_from = "variable",
+                                                             values_from = "estimate")
+
+hud_w_block <- hud_w_flood %>% left_join(other_census_wider, 
+                                          by = c("block_group" = "GEOID")) 
+
+
+hud_w_block <- hud_w_block %>%
+  mutate(perc_white = (total_white/total_pop)*100,
+         perc_renters = (renter/total_pop)*100,
+         perc_poverty = (poverty/total_pop)*100,
+         perc_vehicles = (vehicles/total_pop)*100,
+         perc_disability = (disability/total_pop)*100)
+
+################## should be able to run some regressions now n###########
+
+lm_1 <- lm(INSPECTION_SCORE ~ NEAR_DIST + age + income + perc_white + 
+             perc_poverty + perc_vehicles + perc_renters + hurrexpo,
+  data = hud_w_block)
+summary(lm_1)
 
 
 
 
 
+
+########## creating panel data ################################
+
+hud_panel <- read_xlsx("data/PublicHousingScores.xlsx") 
+locations <- hud_panel %>%
+  select(c(3, 6:15)) %>% unique()
+
+
+locations_half1<- locations[1:200,]
+
+locations_half1$census_code <- apply(locations_half1, 1, 
+                                 function(row) 
+                                   call_geolocator_latlon(row['latitude'], row['longitude']))
+
+
+
+
+
+
+
+hud_w_flood <- hud_w_flood %>%
+  left_join(county_hazard_data, by = c("county_FIPS" = "fips")) %>%
+  filter(STATE_NAME != "PR" & STATE_NAME != "VI" & STATE_NAME != "GU")
+
+
+
+
+hud_w_flood$census_code <- as.character(hud_w_flood$census_code)
+hud_w_flood <- hud_w_flood %>%
+  mutate(block_group = substr(census_code, 1, 12))
+
+
+##################### read census data for those block groups ############# 
+
+
+#use ACS to pull in race, age
+census_api_key("ff5d487d0a2a22c658bf319ba136c27db32aa0be", install = TRUE, 
+               overwrite = TRUE)
+v20 <- load_variables(2020, "acs5", cache = TRUE)
+View(v20)
+
+other_census_blockgroup <- get_acs(survey = "acs5", geography = "block group", 
+                                   variables = c(age = "B01002_001",
+                                                 income =  "B19013_001",
+                                                 prop_value = "B25077_001",
+                                                 public_assistance = "B19057_001",  
+                                                 poverty = "B17010_001", 
+                                                 vehicles = "B25044_001",
+                                                 renter = "B25003_003",
+                                                 owner = "B25003_002",
+                                                 total_white = "B03002_003",
+                                                 total_black = "B03002_004",
+                                                 total_hispanic = "B03002_012",
+                                                 total_pop = "B01003_001",
+                                                 disability = "B18101_001"), 
+                                   state = c(unique(hud_w_flood$STATE_CODE)),
+                                   year = 2020)
+
+
+
+other_census_wider <- other_census_blockgroup%>% pivot_wider(id_cols = "GEOID",
+                                                             names_from = "variable",
+                                                             values_from = "estimate")
+
+hud_w_block <- hud_w_flood %>% left_join(other_census_wider, 
+                                         by = c("block_group" = "GEOID")) 
+
+
+hud_w_block <- hud_w_block %>%
+  mutate(perc_white = (total_white/total_pop)*100,
+         perc_renters = (renter/total_pop)*100,
+         perc_poverty = (poverty/total_pop)*100,
+         perc_vehicles = (vehicles/total_pop)*100,
+         perc_disability = (disability/total_pop)*100)
 
 
