@@ -54,6 +54,11 @@ hud_data_2011$inspection_date <- as.character(hud_data_2011$inspection_date)
 hud_data_2011$inspection_score <- as.double(hud_data_2011$inspection_score)
 
 names(hud_data_2011) <- names(hud_data_2021)
+names(hud_data_2020) <- names(hud_data_2021)
+names(hud_data_2019) <- names(hud_data_2021)
+names(hud_data_2018) <- names(hud_data_2021)
+names(hud_data_2016) <- names(hud_data_2021)
+names(hud_data_2015) <- names(hud_data_2021)
 
 
 
@@ -69,7 +74,9 @@ joined_hud <- hud_data_2021 %>%
 
 
 all_locations <- joined_hud %>%
-  select(c(DEVELOPMENT_ID, LATITUDE, LONGITUDE)) %>%
+  select(c(DEVELOPMENT_ID, LATITUDE, LONGITUDE, STATE_NAME)) %>%
   unique()
+
+
 
   
