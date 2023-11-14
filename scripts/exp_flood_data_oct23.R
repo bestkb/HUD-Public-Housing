@@ -140,6 +140,7 @@ inspection_flood_all <- inspection_scores_other %>%
 #wrote as "data/all_inspscores_datecorrect.Rds"
 
 
+
 ######## next step is to pull in block group census data from ACS ########
 #### write a function that uses inspection_year?
 library(tidycensus)
@@ -264,6 +265,12 @@ join_block <- join_block %>%
 #write_rds(join_block, "data/insp_w_census.Rds")
 
 ## this now has 30,082 observations
+
+insp_w_census <- read_rds("data/insp_w_census.Rds") %>%
+  filter(!is.na(INSPECTION_DATE)) %>%
+  select(c(1:14))
+
+#write_csv(insp_w_census, "data/locations_inspectionscores_forMeri_Nov.csv")
 
 
 ### pull county data ### 
