@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import plotly.express 
+import matplotlib.pyplot as plt
 import csv
+import os
 
 #number of decimals to keep
 NUM_DECIMAL = 2
@@ -70,6 +73,27 @@ if __name__ == '__main__':
         
         stat_writer.writerow(stats_each)
     
-    #close the file
     stat_file.close()
-    
+
+    #histograms of inspection scores with each individual year
+    i = 0
+    for yr in all_years:
+        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
+        plt.figure(f'{i}')
+        sns.histplot(inspection_score_each)
+        plt.title(f'inspection score in {yr}')
+        plt.savefig(f'figures/dist_by_year/hist_{yr}.png')
+        i += 1
+
+    #inspection scores changed over years
+    mean_years = pd.DataFrame()
+    for yr in all_years:
+        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
+        another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
+        mean_years = pd.concat([mean_years, another_year], axis=1)
+
+    plt.figure(f'{i}')
+    plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ])
+    plt.xlabel('time in years')
+    plt.ylabel('inspection score')
+    plt.savefig('figures/dist_by_year/all.png')
