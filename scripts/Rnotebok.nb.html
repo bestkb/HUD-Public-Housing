@@ -1754,18 +1754,50 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkcilcbmxvY2F0aW9uc19pbnNwZWN0aW9uc2NvcmVzX2Zvck1lcmlfTm92IDwtIHJlYWRfY3N2KFwiZGF0YS9sb2NhdGlvbnNfaW5zcGVjdGlvbnNjb3Jlc19mb3JNZXJpX05vdi5jc3ZcIilcbmBgYCJ9 -->
-<pre class="r"><code>library(readr)
-locations_inspectionscores_forMeri_Nov &lt;- read_csv(&quot;data/locations_inspectionscores_forMeri_Nov.csv&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByZWFkaW5nIHRoZSBkYXRhc2V0XG5saWJyYXJ5KHJlYWRyKVxuZGYgPC0gcmVhZF9jc3YoXCJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vYmVzdGtiL0hVRC1QdWJsaWMtSG91c2luZy9tYWluL2RhdGEvbG9jYXRpb25zX2luc3BlY3Rpb25zY29yZXNfZm9yTWVyaV9Ob3YuY3N2XCIpXG5gYGAifQ== -->
+<pre class="r"><code># reading the dataset
+library(readr)
+df &lt;- read_csv(&quot;https://raw.githubusercontent.com/bestkb/HUD-Public-Housing/main/data/locations_inspectionscores_forMeri_Nov.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6ICdkYXRhL2xvY2F0aW9uc19pbnNwZWN0aW9uc2NvcmVzX2Zvck1lcmlfTm92LmNzdicgZG9lcyBub3QgZXhpc3QgaW4gY3VycmVudCB3b3JraW5nIGRpcmVjdG9yeSAoJ0M6L1VzZXJzL0Zhcmhhbi9PbmVEcml2ZS9Eb2N1bWVudHMvR2l0aHViIFJlcG9zaXRvcmllcy9IVUQtUHVibGljLUhvdXNpbmcvc2NyaXB0cycpLlxuIn0= -->
-<pre><code>Error: &#39;data/locations_inspectionscores_forMeri_Nov.csv&#39; does not exist in current working directory (&#39;C:/Users/Farhan/OneDrive/Documents/Github Repositories/HUD-Public-Housing/scripts&#39;).</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMjk3NTAgQ29sdW1uczogMTTilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiLFwiXG5jaHIgICg3KTogREVWRUxPUE1FTlRfSUQsIFNUQVRFX05BTUUueCwgU1RBVEVfQ09ERSwgWklQQ09ERSwgY2Vuc3VzX2NvZGUsIGJsb2NrX2dyb3VwLCBjb3VudHlcbmRibCAgKDYpOiBJTlNQRUNUSU9OX1NDT1JFLCBpbl9mbG9vZHBsYWluLCBpbnNwZWN0aW9uX3llYXIsIGxhdGl0dWRlLCBsb25naXR1ZGUsIGRpc3RhbmNlX3RvX2Zsb29kem9uZVxuZGF0ZSAoMSk6IElOU1BFQ1RJT05fREFURVxu4oS5IFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxu4oS5IFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
+<pre><code>Rows: 29750 Columns: 14── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (7): DEVELOPMENT_ID, STATE_NAME.x, STATE_CODE, ZIPCODE, census_code, block_group, county
+dbl  (6): INSPECTION_SCORE, in_floodplain, inspection_year, latitude, longitude, distance_to_floodzone
+date (1): INSPECTION_DATE
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyhkZilcbmBgYCJ9 -->
+<pre class="r"><code>View(df)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBIZWFkZXIgZm9yIHllYXJcbkhFQURFUl9ZRUFSIDwtIGMoJ3llYXInLCAnY291bnQnLCAnbWVhbicsICdzdGQnLCAnbWluJywgJzI1JScsICc1MCUnLCAnNzUlJywgJ21heCcpXG5cbiMgSGVhZGVyIGZvciBzdGF0ZVxuSEVBREVSX1NUQVRFIDwtIGMoJ3N0YXRlJywgJ2NvdW50JywgJ21lYW4nLCAnc3RkJywgJ21pbicsICcyNSUnLCAnNTAlJywgJzc1JScsICdtYXgnKVxuXG5gYGAifQ== -->
+<pre class="r"><code># Header for year
+HEADER_YEAR &lt;- c(&#39;year&#39;, &#39;count&#39;, &#39;mean&#39;, &#39;std&#39;, &#39;min&#39;, &#39;25%&#39;, &#39;50%&#39;, &#39;75%&#39;, &#39;max&#39;)
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkocmVhZHIpDQpsb2NhdGlvbnNfaW5zcGVjdGlvbnNjb3Jlc19mb3JNZXJpX05vdiA8LSByZWFkX2NzdigiZGF0YS9sb2NhdGlvbnNfaW5zcGVjdGlvbnNjb3Jlc19mb3JNZXJpX05vdi5jc3YiKQ0KVmlldyhsb2NhdGlvbnNfaW5zcGVjdGlvbnNjb3Jlc19mb3JNZXJpX05vdikNCmBgYA0KDQo=</div>
+# Header for state
+HEADER_STATE &lt;- c(&#39;state&#39;, &#39;count&#39;, &#39;mean&#39;, &#39;std&#39;, &#39;min&#39;, &#39;25%&#39;, &#39;50%&#39;, &#39;75%&#39;, &#39;max&#39;)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDcmVhdGUgdGhlIENTViB3cml0ZXJcbndyaXRlLnRhYmxlKGFzLmRhdGEuZnJhbWUodCgpKSlcblxuYGBgIn0= -->
+<pre class="r"><code># Create the CSV writer
+write.table(as.data.frame(t()))
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gdC5kZWZhdWx0KCkgOiBhcmd1bWVudCBcInhcIiBpcyBtaXNzaW5nLCB3aXRoIG5vIGRlZmF1bHRcbiJ9 -->
+<pre><code>Error in t.default() : argument &quot;x&quot; is missing, with no default</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7ciwgaW5jbHVkZT1UUlVFfQ0KIyByZWFkaW5nIHRoZSBkYXRhc2V0DQpsaWJyYXJ5KHJlYWRyKQ0KZGYgPC0gcmVhZF9jc3YoImh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9iZXN0a2IvSFVELVB1YmxpYy1Ib3VzaW5nL21haW4vZGF0YS9sb2NhdGlvbnNfaW5zcGVjdGlvbnNjb3Jlc19mb3JNZXJpX05vdi5jc3YiKQ0KVmlldyhkZikNCmBgYA0KDQpgYGB7ciwgaW5jbHVkZSA9IFRSVUV9DQojIEhlYWRlciBmb3IgeWVhcg0KSEVBREVSX1lFQVIgPC0gYygneWVhcicsICdjb3VudCcsICdtZWFuJywgJ3N0ZCcsICdtaW4nLCAnMjUlJywgJzUwJScsICc3NSUnLCAnbWF4JykNCg0KIyBIZWFkZXIgZm9yIHN0YXRlDQpIRUFERVJfU1RBVEUgPC0gYygnc3RhdGUnLCAnY291bnQnLCAnbWVhbicsICdzdGQnLCAnbWluJywgJzI1JScsICc1MCUnLCAnNzUlJywgJ21heCcpDQoNCmBgYA0KDQoNCmBgYHtyLCBpbmNsdWRlPVRSVUV9DQojIHNwZWNpZnkgdGhlIGZpbGUgcGF0aA0KZmlsZV9wYXRoIDwtICdDOi9Vc2Vycy9GYXJoYW4vT25lRHJpdmUvRG9jdW1lbnRzL0dpdGh1YiBSZXBvc2l0b3JpZXMvSFVELVB1YmxpYy1Ib3VzaW5nL2ZpZ3VyZXMvc3RhdHNfaW5zcGVjdGlvbl9zY29yZV95ZWFyLmNzdicNCg0KIyBTdGF0aXN0aWMgQ1NWIHRhYmxlIC0tIGJ5IHllYXINCnN0YXRfZmlsZSA8LSBmaWxlKGZpbGVfcGF0aCwgJ3cnKQ0KDQojIENyZWF0ZSB0aGUgQ1NWIHdyaXRlcg0Kd3JpdGUudGFibGUoYXMuZGF0YS5mcmFtZSh0KCkpKQ0KYGBg</div>
 
 
 
