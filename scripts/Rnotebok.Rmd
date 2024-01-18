@@ -1,0 +1,11 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(readr)
+locations_inspectionscores_forMeri_Nov <- read_csv("data/locations_inspectionscores_forMeri_Nov.csv")
+View(locations_inspectionscores_forMeri_Nov)
+```
+
