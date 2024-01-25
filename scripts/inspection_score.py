@@ -40,6 +40,9 @@ if __name__ == '__main__':
     #get all available years and get them sorted
     all_years = sorted(list(set(df['inspection_year'].astype(np.int32))))
 
+    #FIXME: remove "2005" outlier value
+    all_years.remove(2005); 
+
     #each-year inspection score statistics
     for yr in all_years:
         inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
@@ -82,7 +85,7 @@ if __name__ == '__main__':
         plt.figure(f'{i}')
         sns.histplot(inspection_score_each)
         plt.title(f'inspection score in {yr}')
-        plt.savefig(f'figures/dist_by_year/hist_{yr}.png')
+        plt.savefig(f'figures/dist_by_year/histagram/hist_{yr}.png')
         i += 1
 
     #inspection scores changed over years
@@ -93,7 +96,58 @@ if __name__ == '__main__':
         mean_years = pd.concat([mean_years, another_year], axis=1)
 
     plt.figure(f'{i}')
-    plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ])
+    plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
     plt.xlabel('time in years')
     plt.ylabel('inspection score')
-    plt.savefig('figures/dist_by_year/all.png')
+    plt.title('inspection score over time in U.S.')
+
+    #inspection scores changed over years  -- median as reference 
+    median_years = pd.DataFrame()
+    for yr in all_years:
+        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
+        another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
+        median_years = pd.concat([median_years, another_year], axis=1)
+
+    plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
+    plt.legend()
+    plt.savefig('figures/dist_by_year/line_plot/US.png')
+    i += 1
+
+    #inspection scores changed over years -- for each state
+    i = 0
+    for st in all_states:
+        #select state-specific dataframe
+        temp_df = df.loc[df['STATE_NAME.x'] == st]
+
+        #ensure year data is available
+        all_years_state = sorted(list(set(temp_df['inspection_year'].astype(np.int32))))
+
+        #inspection scores changed over years
+        mean_years = pd.DataFrame()
+        for yr in all_years_state:
+            
+            inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
+            another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
+            mean_years = pd.concat([mean_years, another_year], axis=1)
+
+        #use different figures to avoid superimposing
+        plt.figure(i)
+        i += 1
+        
+        plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
+        plt.xlabel('time in years')
+        plt.ylabel('inspection score')
+        plt.title(f'inspection score over time in {st}')
+
+
+        #inspection scores changed over years  -- median as reference 
+        median_years = pd.DataFrame()
+        for yr in all_years_state:
+            inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
+            another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
+            median_years = pd.concat([median_years, another_year], axis=1)
+
+        plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
+        plt.legend()
+        plt.savefig(f'figures/dist_by_year/line_plot/{st}.png')
+        
