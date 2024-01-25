@@ -15,7 +15,7 @@ HEADER_STATE = ['state', 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'ma
 
 if __name__ == '__main__':
   #read the dataset
-  df = pd.read_csv('../data/locations_inspectionscores_forMeri_Nov.csv')
+  df = pd.read_csv('../data/tract_demographics_forMeri_Nov.csv')
 
 #inspection score data
 inspection_score = df['INSPECTION_SCORE']
@@ -70,5 +70,16 @@ stats_each.insert(0, st)
 
 stat_writer.writerow(stats_each)
 
+# get all available states and get them sorted
+all_states = sorted(list(set(df['STATE_NAME.x'])))
+
+# statistic CSV table -- by state
+stat_file = open('../figures/stats_inspection_score_state.csv', 'w') 
+
+stat_writer = csv.writer(stat_file)
+
+# header for state 
+# close the file
+stat_file.close()
 #close the file
 stat_file.close()
