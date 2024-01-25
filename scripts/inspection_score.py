@@ -15,59 +15,6 @@ HEADER_YEAR = ['year', 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'
 #header for state
 HEADER_STATE = ['state', 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
 
-state_mapping = {
-    'AK': 'Alaska',
-    'AL': 'Alabama',
-    'AR': 'Arkansas',
-    'AZ': 'Arizona',
-    'CA': 'California',
-    'CO': 'Colorado',
-    'CT': 'Connecticut',
-    'DC': 'District of Columbia',
-    'DE': 'Delaware',
-    'FL': 'Florida',
-    'GA': 'Georgia',
-    'HI': 'Hawaii',
-    'IA': 'Iowa',
-    'ID': 'Idaho',
-    'IL': 'Illinois',
-    'IN': 'Indiana',
-    'KS': 'Kansas',
-    'KY': 'Kentucky',
-    'LA': 'Louisiana',
-    'MA': 'Massachusetts',
-    'MD': 'Maryland',
-    'ME': 'Maine',
-    'MI': 'Michigan',
-    'MN': 'Minnesota',
-    'MO': 'Missouri',
-    'MS': 'Mississippi',
-    'MT': 'Montana',
-    'NC': 'North Carolina',
-    'ND': 'North Dakota',
-    'NE': 'Nebraska',
-    'NH': 'New Hampshire',
-    'NJ': 'New Jersey',
-    'NM': 'New Mexico',
-    'NV': 'Nevada',
-    'NY': 'New York',
-    'OH': 'Ohio',
-    'OK': 'Oklahoma',
-    'OR': 'Oregon',
-    'PA': 'Pennsylvania',
-    'RI': 'Rhode Island',
-    'SC': 'South Carolina',
-    'SD': 'South Dakota',
-    'TN': 'Tennessee',
-    'TX': 'Texas',
-    'UT': 'Utah',
-    'VT': 'Vermont',
-    'VA': 'Virginia',
-    'WA': 'Washington',
-    'WI': 'Wisconsin',
-    'WV': 'West Virginia',
-    'WY': 'Wyoming'
-}
 
 if __name__ == '__main__':
     #read the dataset
@@ -137,7 +84,7 @@ if __name__ == '__main__':
         inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
         plt.figure(f'{i}')
         sns.histplot(inspection_score_each)
-        plt.title(f'Inspection Score in {yr}')
+        plt.title(f'inspection score in {yr}')
         plt.savefig(f'figures/dist_by_year/histagram/hist_{yr}.png')
         i += 1
 
@@ -150,9 +97,9 @@ if __name__ == '__main__':
 
     plt.figure(f'{i}')
     plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
-    plt.xlabel('Time (Year)')
-    plt.ylabel('Inspection Score')
-    plt.title('inspection Score over time in U.S.')
+    plt.xlabel('time in years')
+    plt.ylabel('inspection score')
+    plt.title('inspection score over time in U.S.')
 
     #inspection scores changed over years  -- median as reference 
     median_years = pd.DataFrame()
@@ -161,7 +108,7 @@ if __name__ == '__main__':
         another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
         median_years = pd.concat([median_years, another_year], axis=1)
 
-    plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="Median")
+    plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
     plt.legend()
     plt.savefig('figures/dist_by_year/line_plot/US.png')
     i += 1
@@ -187,10 +134,10 @@ if __name__ == '__main__':
         plt.figure(i)
         i += 1
         
-        plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="Mean")
-        plt.xlabel('Time (Year)')
-        plt.ylabel('Inspection Score')
-        plt.title(f'Inspection Score over time in {state_mapping[st]}')
+        plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
+        plt.xlabel('time in years')
+        plt.ylabel('inspection score')
+        plt.title(f'inspection score over time in {st}')
 
 
         #inspection scores changed over years  -- median as reference 
@@ -200,7 +147,6 @@ if __name__ == '__main__':
             another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
             median_years = pd.concat([median_years, another_year], axis=1)
 
-        plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="Median")
+        plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
         plt.legend()
         plt.savefig(f'figures/dist_by_year/line_plot/{st}.png')
-        
