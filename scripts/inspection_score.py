@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import plotly.express 
+import matplotlib.pyplot as plt
 import csv
+import os
 
 #number of decimals to keep
 NUM_DECIMAL = 2
@@ -14,72 +17,137 @@ HEADER_STATE = ['state', 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'ma
 
 
 if __name__ == '__main__':
-  #read the dataset
-  df = pd.read_csv('../data/tract_demographics_forMeri_Nov.csv')
+    #read the dataset
+    df = pd.read_csv('data/locations_inspectionscores_forMeri_Nov.csv')
+    
+    #inspection score data
+    inspection_score = df['INSPECTION_SCORE']
+    
+    #statistic CSV table -- by year
+    stat_file = open('figures/stats_inspection_score_year.csv', 'w') 
+    
+    stat_writer = csv.writer(stat_file)
+    
+    stat_writer.writerow(HEADER_YEAR)
 
-#inspection score data
-inspection_score = df['INSPECTION_SCORE']
+    #overall inspection score statistics
+    stats = inspection_score.describe().round(NUM_DECIMAL).to_list()
+    
+    stats.insert(0, 'overall')
+    
+    stat_writer.writerow(stats)
 
-#statistic CSV table -- by year
-stat_file = open('../figures/stats_inspection_score_year.csv', 'w') 
+    #get all available years and get them sorted
+    all_years = sorted(list(set(df['inspection_year'].astype(np.int32))))
 
-stat_writer = csv.writer(stat_file)
+    #FIXME: remove "2005" outlier value
+    all_years.remove(2005); 
 
-stat_writer.writerow(HEADER_YEAR)
+    #each-year inspection score statistics
+    for yr in all_years:
+        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
+        
+        stats_each = inspection_score_each.describe().round(NUM_DECIMAL).to_list()
+        
+        stats_each.insert(0, yr)
+        
+        stat_writer.writerow(stats_each)
+    
+    #close the file
+    stat_file.close()
 
-#overall inspection score statistics
-stats = inspection_score.describe().round(NUM_DECIMAL).to_list()
+    #get all available states and get them sorted
+    all_states = sorted(list(set(df['STATE_NAME.x'])))
 
-stats.insert(0, 'overall')
+    #statistic CSV table -- by state
+    stat_file = open('figures/stats_inspection_score_state.csv', 'w') 
+    
+    stat_writer = csv.writer(stat_file)
+    
+    stat_writer.writerow(HEADER_STATE)
 
-stat_writer.writerow(stats)
+    #each-state inspection score statistics
+    for st in all_states:
+        inspection_score_each = df.loc[df['STATE_NAME.x'] == st]['INSPECTION_SCORE']
 
-#get all available years and get them sorted
-all_years = sorted(list(set(df['inspection_year'].astype(np.int32))))
+        stats_each = inspection_score_each.describe().round(NUM_DECIMAL).to_list()
+        
+        stats_each.insert(0, st)
+        
+        stat_writer.writerow(stats_each)
+    
+    stat_file.close()
 
-#each-year inspection score statistics
-for yr in all_years:
-  inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
+    #histograms of inspection scores with each individual year
+    i = 0
+    for yr in all_years:
+        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
+        plt.figure(f'{i}')
+        sns.histplot(inspection_score_each)
+        plt.title(f'inspection score in {yr}')
+        plt.savefig(f'figures/dist_by_year/histagram/hist_{yr}.png')
+        i += 1
 
-stats_each = inspection_score_each.describe().round(NUM_DECIMAL).to_list()
+    #inspection scores changed over years
+    mean_years = pd.DataFrame()
+    for yr in all_years:
+        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
+        another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
+        mean_years = pd.concat([mean_years, another_year], axis=1)
 
-stats_each.insert(0, yr)
+    plt.figure(f'{i}')
+    plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
+    plt.xlabel('time in years')
+    plt.ylabel('inspection score')
+    plt.title('inspection score over time in U.S.')
 
-stat_writer.writerow(stats_each)
+    #inspection scores changed over years  -- median as reference 
+    median_years = pd.DataFrame()
+    for yr in all_years:
+        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
+        another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
+        median_years = pd.concat([median_years, another_year], axis=1)
 
-#close the file
-stat_file.close()
+    plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
+    plt.legend()
+    plt.savefig('figures/dist_by_year/line_plot/US.png')
+    i += 1
 
-#get all available states and get them sorted
-all_states = sorted(list(set(df['STATE_NAME.x'])))
+    #inspection scores changed over years -- for each state
+    i = 0
+    for st in all_states:
+        #select state-specific dataframe
+        temp_df = df.loc[df['STATE_NAME.x'] == st]
 
-#statistic CSV table -- by state
-stat_file = open('../figures/stats_inspection_score_state.csv', 'w') 
+        #ensure year data is available
+        all_years_state = sorted(list(set(temp_df['inspection_year'].astype(np.int32))))
 
-stat_writer = csv.writer(stat_file)
+        #inspection scores changed over years
+        mean_years = pd.DataFrame()
+        for yr in all_years_state:
+            
+            inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
+            another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
+            mean_years = pd.concat([mean_years, another_year], axis=1)
 
-stat_writer.writerow(HEADER_STATE)
+        #use different figures to avoid superimposing
+        plt.figure(i)
+        i += 1
+        
+        plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
+        plt.xlabel('time in years')
+        plt.ylabel('inspection score')
+        plt.title(f'inspection score over time in {st}')
 
-#each-state inspection score statistics
-for st in all_states:
-  inspection_score_each = df.loc[df['STATE_NAME.x'] == st]['INSPECTION_SCORE']
 
-stats_each = inspection_score_each.describe().round(NUM_DECIMAL).to_list()
+        #inspection scores changed over years  -- median as reference 
+        median_years = pd.DataFrame()
+        for yr in all_years_state:
+            inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
+            another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
+            median_years = pd.concat([median_years, another_year], axis=1)
 
-stats_each.insert(0, st)
-
-stat_writer.writerow(stats_each)
-
-# get all available states and get them sorted
-all_states = sorted(list(set(df['STATE_NAME.x'])))
-
-# statistic CSV table -- by state
-stat_file = open('../figures/stats_inspection_score_state.csv', 'w') 
-
-stat_writer = csv.writer(stat_file)
-
-# header for state 
-# close the file
-stat_file.close()
-#close the file
-stat_file.close()
+        plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
+        plt.legend()
+        plt.savefig(f'figures/dist_by_year/line_plot/{st}.png')
+        
