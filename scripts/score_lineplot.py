@@ -18,7 +18,7 @@ HEADER_STATE = ['state', 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'ma
 
 if __name__ == '__main__':
     #read the dataset
-    df = pd.read_csv('data/locations_inspectionscores_forMeri_Nov.csv')
+    df = pd.read_csv('data/locations_inspectionscores_forMeri_Nov.csv')    
     
     #inspection score data
     inspection_score = df['INSPECTION_SCORE']
@@ -78,15 +78,8 @@ if __name__ == '__main__':
     
     stat_file.close()
 
-    #histograms of inspection scores with each individual year
-    i = 0
-    for yr in all_years:
-        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
-        plt.figure(f'{i}')
-        sns.histplot(inspection_score_each)
-        plt.title(f'inspection score in {yr}')
-        plt.savefig(f'figures/dist_by_year/histagram/hist_{yr}.png')
-        i += 1
+    #single point control of figure number
+    figure_number = 0
 
     #inspection scores changed over years
     mean_years = pd.DataFrame()
@@ -95,7 +88,7 @@ if __name__ == '__main__':
         another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
         mean_years = pd.concat([mean_years, another_year], axis=1)
 
-    plt.figure(f'{i}')
+    plt.figure(f'{figure_number}')
     plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
     plt.xlabel('time in years')
     plt.ylabel('inspection score')
@@ -111,10 +104,11 @@ if __name__ == '__main__':
     plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
     plt.legend()
     plt.savefig('figures/dist_by_year/line_plot/US.png')
-    i += 1
+
+    #update figure number from 0 to 1
+    figure_number += 1
 
     #inspection scores changed over years -- for each state
-    i = 0
     for st in all_states:
         #select state-specific dataframe
         temp_df = df.loc[df['STATE_NAME.x'] == st]
@@ -131,8 +125,8 @@ if __name__ == '__main__':
             mean_years = pd.concat([mean_years, another_year], axis=1)
 
         #use different figures to avoid superimposing
-        plt.figure(i)
-        i += 1
+        plt.figure(f'{figure_number}')
+        figure_number += 1
         
         plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
         plt.xlabel('time in years')
