@@ -1,32 +1,34 @@
----
-title: "R Notebook"
-output: html_notebook
----
-
-```{r, include=TRUE}
-# reading the dataset
+```{r}
+library(tidyverse)
+library(plotly)
 library(readr)
-df <- read_csv("https://raw.githubusercontent.com/bestkb/HUD-Public-Housing/main/data/locations_inspectionscores_forMeri_Nov.csv")
-View(df)
+library(webshot)
 ```
 
-```{r, include = TRUE}
-# Header for year
-HEADER_YEAR <- c('year', 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max')
+```{r}
 
-# Header for state
-HEADER_STATE <- c('state', 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max')
+state <- read_csv("../figures/stats_inspection_score_state.csv", show_col_types = FALSE)
+year <- read_csv("../figures/stats_inspection_score_year.csv", show_col_types = FALSE)[-1, ]
+```
 
+```{r}
+# Create choropleth map
+fig <- plot_geo(state, locationmode = 'USA-states') %>%
+  add_trace(
+    z = ~mean,
+    locations = ~state,
+    text = ~state,
+    colorscale = 'reds',
+    colorbar = list(title = 'Mean Inspection Score')
+  ) %>%
+  layout(
+    title = 'Mean Inspection Score by State',
+    geo = list(scope = 'usa')
+  )
+
+# Show the plot
+fig
+plotly::write_image(fig, file = 'mean_inspection.png')
 ```
 
 
-```{r, include=TRUE}
-# specify the file path
-file_path <- 'C:/Users/Farhan/OneDrive/Documents/Github Repositories/HUD-Public-Housing/figures/stats_inspection_score_year.csv'
-
-# Statistic CSV table -- by year
-stat_file <- file(file_path, 'w')
-
-# Create the CSV writer
-write.table(as.data.frame(t()))
-```
