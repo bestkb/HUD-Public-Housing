@@ -113,7 +113,7 @@ if __name__ == '__main__':
     figure_number = 0
 
     #inspection scores changed over years -- in_floodplain
-    score_vs_floodplain = open('figures/correlation/score_vs_floodplain_overall.csv', 'w') 
+    score_vs_floodplain = open('figures/correlation/floodplain/score_vs_floodplain_overall.csv', 'w') 
     writer = csv.writer(score_vs_floodplain)
     writer.writerow(['year', 'infloodplain', 'NOTinfloodplain'])
     for yr in all_years:
@@ -135,7 +135,7 @@ if __name__ == '__main__':
     for num in range(1, 11):    
         region = f'region{num}'
         states = FEMA_MAP[region]
-        score_vs_floodplain = open(f'figures/correlation/score_vs_floodplain_FEMA{region}.csv', 'w') 
+        score_vs_floodplain = open(f'figures/correlation/floodplain/score_vs_floodplain_FEMA{region}.csv', 'w') 
         writer = csv.writer(score_vs_floodplain)
         writer.writerow(['year', 'infloodplain', 'NOTinfloodplain'])
 
@@ -161,32 +161,3 @@ if __name__ == '__main__':
             writer.writerow([yr, inspection_score_flood, inspection_score_nonflood])
 
         score_vs_floodplain.close()
-        
-    #     #inspection scores changed over years
-    #     mean_years = pd.DataFrame()
-    #     for yr in all_years_state:
-    #         inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
-    #         another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
-    #         mean_years = pd.concat([mean_years, another_year], axis=1)
-
-    #     #use different figures to avoid superimposing
-    #     plt.figure(f'{figure_number}')
-    #     figure_number += 1
-        
-    #     plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
-    #     plt.xlabel('time in years')
-    #     plt.ylabel('inspection score')
-    #     plt.title(f'inspection score over time in FEMA {region}')
-
-    #     #inspection scores changed over years  -- median as reference 
-    #     median_years = pd.DataFrame()
-    #     for yr in all_years_state:
-    #         inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
-    #         another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
-    #         median_years = pd.concat([median_years, another_year], axis=1)
-
-    #     plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
-    #     plt.legend()
-    #     #footnote_text = f'{region} {[s for s in FEMA_MAP[region]]}'
-    #     #plt.annotate(footnote_text, (0.5, -0.1), xycoords='axes fraction', ha='right', fontsize=8, color='gray')
-    #     plt.savefig(f'figures/dist_by_year/line_plot/FEMA{region}.png')
