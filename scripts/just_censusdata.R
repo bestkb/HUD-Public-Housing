@@ -7,11 +7,10 @@ library(tigris)
 
 ######## next step is to pull in block group census data from ACS ########
 
-insp_w_census <- read_rds("data/insp_w_census.Rds") %>%
-  filter(!is.na(INSPECTION_DATE))
+insp_w_census <- read_csv("data/locations_inspectionscores_forMeri_Feb.csv") 
 
 locations_only <- insp_w_census %>%
-  select(c(1, 13, 14)) %>%
+  select(c(1, 16, 17)) %>%
   mutate(tract = substr(as.character(block_group), 1, 11))%>%
   unique()
 
@@ -96,7 +95,7 @@ all_county_demographics <- locations_only %>%
   left_join(hold_data_c, by = c("county" = "GEOID"))
 
 
-#write_csv(all_county_demographics, "data/county_demographics_forMeri_Nov.csv")
+#write_csv(all_county_demographics, "data/county_demographics_forMeri_Feb.csv")
 
 
 
@@ -138,6 +137,6 @@ all_tract_demographics <- locations_only %>%
   left_join(hold_data_t, by = c("tract" = "GEOID"))
 
 
-#write_csv(all_tract_demographics, "data/tract_demographics_forMeri_Nov.csv")
+#write_csv(all_tract_demographics, "data/tract_demographics_forMeri_Feb.csv")
 
 
