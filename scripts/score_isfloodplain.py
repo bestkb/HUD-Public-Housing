@@ -50,7 +50,7 @@ def in_region(df, region_list):
 
 if __name__ == '__main__':
     #read the dataset
-    df = pd.read_csv('data/locations_inspectionscores_forMeri_Nov.csv')    
+    df = pd.read_csv('data/locations_inspectionscores_forMeri_Feb.csv')    
     
     #inspection score data
     inspection_score = df['INSPECTION_SCORE']
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     stat_writer.writerow(stats)
 
     #get all available years and get them sorted
-    all_years = sorted(list(set(df['inspection_year'].astype(np.int32))))
+    all_years = sorted(list(set(df['inspection_year'].dropna().astype(np.int32))))
 
     all_years.remove(2005); 
 
@@ -145,7 +145,7 @@ if __name__ == '__main__':
             temp_df = pd.concat([temp_df, df.loc[df['STATE_NAME.x'] == st]], axis=0)
 
         #ensure year data is available
-        all_years_state = sorted(list(set(temp_df['inspection_year'].astype(np.int32))))
+        all_years_state = sorted(list(set(temp_df['inspection_year'].dropna().astype(np.int32))))
 
         for yr in all_years_state:
             #extract data

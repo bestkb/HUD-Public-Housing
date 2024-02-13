@@ -44,7 +44,7 @@ HEADER_STATE = ['state', 'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'ma
 
 if __name__ == '__main__':
     #read the dataset
-    df = pd.read_csv('data/locations_inspectionscores_forMeri_Nov.csv')
+    df = pd.read_csv('data/locations_inspectionscores_forMeri_Feb.csv')
 
     #only extract the middle 50 percent of the data based on distance_to_floodzone
     per_25 = list(df['distance_to_floodzone'].describe())[4]
@@ -55,14 +55,8 @@ if __name__ == '__main__':
     distance_data = df['distance_to_floodzone']
     score_data = df['INSPECTION_SCORE']
 
-    #Perform linear regression using numpy
-    slope, intercept = np.polyfit(distance_data, score_data, 1)
-
     #scatter plot -- overall
     plt.scatter(x=distance_data, y=score_data, s=1)
-    
-    #Plot regression line
-    plt.plot(distance_data, slope*np.array(distance_data) + intercept, color='red', label='Regression Line')
     
     plt.title('Distance to Floodzone vs. Inspection Score in U.S')
     plt.xlabel('Distance to floodzone')
@@ -89,14 +83,8 @@ if __name__ == '__main__':
         plt.figure(f'{figure_number}')
         figure_number += 1
         
-        #Perform linear regression using numpy
-        slope, intercept = np.polyfit(distance_data, score_data, 1)
-
         #scatter plot -- overall
         plt.scatter(x=distance_data, y=score_data, s=1)
-
-        #Plot regression line
-        plt.plot(distance_data, slope*np.array(distance_data) + intercept, color='red', label='Regression Line')
 
         plt.title(f'Distance to Floodzone vs. Inspection Score in FEMA {region}')
         plt.xlabel('Distance to floodzone')
