@@ -104,7 +104,7 @@ if __name__ == '__main__':
         stat_writer.writerow(stats_each)
     
     stat_file.close()
-    region = 1
+    region_number = 1
     #single point control of figure number
     figure_number = 0
 
@@ -163,11 +163,13 @@ if __name__ == '__main__':
             plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label=f"region{num}")
 
         dataFrame = pd.DataFrame(data = median_years)
-        dataFrame['region'] = region
+        dataFrame['region'] = region_number
         #print(dataFrame)
         final_df = pd.concat([final_df, dataFrame], ignore_index=True)
         plt.legend()
+        region_number += 1
         #footnote_text = f'{region} {[s for s in FEMA_MAP[region]]}'
         #plt.annotate(footnote_text, (0.5, -0.1), xycoords='axes fraction', ha='right', fontsize=8, color='gray')
-    print(final_df)
+    final_df.to_csv('data/dataframe.csv', index=False)
+    # harcoding
     #plt.show()
