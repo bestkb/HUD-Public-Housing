@@ -1,10 +1,7 @@
 import pandas as pd
 import numpy as np
-import seaborn as sns
-import plotly.express 
 import matplotlib.pyplot as plt
 import csv
-import os
 
 #number of decimals to keep
 NUM_DECIMAL = 2
@@ -111,30 +108,18 @@ if __name__ == '__main__':
     #single point control of figure number
     figure_number = 0
 
-    #inspection scores changed over years
-    mean_years = pd.DataFrame()
-    for yr in all_years:
-        inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
-        another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
-        mean_years = pd.concat([mean_years, another_year], axis=1)
-
-    plt.figure(f'{figure_number}')
-    plt.plot(mean_years.columns.to_list(), mean_years.iloc[0, ], label="mean")
-    plt.xlabel('time in years')
-    plt.ylabel('inspection score')
-    plt.title('inspection score over time in U.S.')
-
     #inspection scores changed over years  -- median as reference 
     median_years = pd.DataFrame()
+    
     for yr in all_years:
         inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
         another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
         median_years = pd.concat([median_years, another_year], axis=1)
-
+        print(median_years)
     plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
     plt.legend()
-    plt.savefig('figures/dist_by_year/line_plot/US.png')
-
+    plt.show()
+    
     #update figure number from 0 to 1
     figure_number += 1
 
@@ -146,6 +131,7 @@ if __name__ == '__main__':
         temp_df = pd.DataFrame()
         for st in states:
             temp_df = pd.concat([temp_df, df.loc[df['STATE_NAME.x'] == st]], axis=0)
+            print(temp_df)
 
         #ensure year data is available
         all_years_state = sorted(list(set(temp_df['inspection_year'].astype(np.int32))))
@@ -156,6 +142,7 @@ if __name__ == '__main__':
             inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
             another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
             mean_years = pd.concat([mean_years, another_year], axis=1)
+            print(mean_years)
 
         #use different figures to avoid superimposing
         plt.figure(f'{figure_number}')
@@ -172,9 +159,9 @@ if __name__ == '__main__':
             inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
             another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
             median_years = pd.concat([median_years, another_year], axis=1)
-
+            print(median_years)
         plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
         plt.legend()
         #footnote_text = f'{region} {[s for s in FEMA_MAP[region]]}'
         #plt.annotate(footnote_text, (0.5, -0.1), xycoords='axes fraction', ha='right', fontsize=8, color='gray')
-        plt.savefig(f'figures/dist_by_year/line_plot/FEMA{region}.png')
+        plt.show()
