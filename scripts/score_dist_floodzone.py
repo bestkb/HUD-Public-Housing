@@ -5,8 +5,8 @@ import plotly.express
 import matplotlib.pyplot as plt
 import csv
 import os
-
-
+import sklearn
+from sklearn.linear_model import LinearRegression
 
 #number of decimals to keep
 NUM_DECIMAL = 2
@@ -63,6 +63,22 @@ if __name__ == '__main__':
     plt.title('Distance to Floodzone vs. Inspection Score in U.S')
     plt.xlabel('Distance to floodzone')
     plt.ylabel('Inspection score')
+    
+    df = df.dropna()
+
+    X = df[['distance_to_floodzone']]
+    y = df['INSPECTION_SCORE']
+
+    model = LinearRegression()
+    model.fit(X, y)
+    #explicit parameters
+    # an array of coefficients
+    coef = model.coef_
+    #intercept 
+    intercept = model.intercept_
+
+    plt.plot(X, coef*X+intercept, color='red')
+
     plt.savefig('figures/correlation/distance/score_vs_distance_overall.png')
 
     #scatter plot -- fema region
@@ -91,4 +107,21 @@ if __name__ == '__main__':
         plt.title(f'Distance to Floodzone vs. Inspection Score in FEMA {region}')
         plt.xlabel('Distance to floodzone')
         plt.ylabel('Inspection score')
+
+
+        #linear regression
+        X = temp_df[['distance_to_floodzone']]
+        y = temp_df['INSPECTION_SCORE']
+
+        model = LinearRegression()
+        model.fit(X, y)
+        #explicit parameters
+        # an array of coefficients
+        coef = model.coef_
+        #intercept 
+        intercept = model.intercept_
+        
+        plt.plot(X, coef*X+intercept, color='red')
+
+        #save the plot
         plt.savefig(f'figures/correlation/distance/score_vs_distance_FEMA{region}.png')
