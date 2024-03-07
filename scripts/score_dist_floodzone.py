@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import csv
 import os
 
+
+
 #number of decimals to keep
 NUM_DECIMAL = 2
 
