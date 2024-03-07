@@ -4,7 +4,7 @@ Dep. Variable:       INSPECTION_SCORE   R-squared:                       0.043
 Model:                            OLS   Adj. R-squared:                  0.042
 Method:                 Least Squares   F-statistic:                     44.93
 Date:                Thu, 07 Mar 2024   Prob (F-statistic):           3.40e-88
-Time:                        01:04:38   Log-Likelihood:                -40955.
+Time:                        01:07:09   Log-Likelihood:                -40955.
 No. Observations:                9992   AIC:                         8.193e+04
 Df Residuals:                    9981   BIC:                         8.201e+04
 Df Model:                          10                                         
@@ -12,25 +12,25 @@ Covariance Type:            nonrobust
 =========================================================================================
                             coef    std err          t      P>|t|      [0.025      0.975]
 -----------------------------------------------------------------------------------------
-Intercept                73.9747      0.500    147.955      0.000      72.995      74.955
+Intercept                81.0207      0.427    189.663      0.000      80.183      81.858
 distance_to_floodzone -1.629e-06   6.78e-07     -2.405      0.016   -2.96e-06   -3.01e-07
-region1                  11.5929      0.745     15.565      0.000      10.133      13.053
-region2                  13.2010      1.056     12.499      0.000      11.131      15.271
-region4                   7.0460      0.657     10.717      0.000       5.757       8.335
-region5                  10.7899      0.583     18.502      0.000       9.647      11.933
-region6                   7.8415      0.610     12.856      0.000       6.646       9.037
-region7                   8.0579      0.623     12.935      0.000       6.837       9.279
-region8                  11.0299      0.731     15.097      0.000       9.598      12.462
-region9                   9.7465      1.080      9.022      0.000       7.629      11.864
-region10                 11.0707      0.976     11.341      0.000       9.157      12.984
+region1                   4.5469      0.698      6.513      0.000       3.178       5.915
+region2                   6.1550      1.024      6.010      0.000       4.147       8.163
+region3                  -7.0460      0.657    -10.717      0.000      -8.335      -5.757
+region5                   3.7439      0.522      7.169      0.000       2.720       4.768
+region6                   0.7955      0.552      1.441      0.150      -0.286       1.877
+region7                   1.0119      0.566      1.787      0.074      -0.098       2.122
+region8                   3.9838      0.683      5.833      0.000       2.645       5.323
+region9                   2.7005      1.049      2.575      0.010       0.645       4.756
+region10                  4.0247      0.942      4.272      0.000       2.178       5.872
 ==============================================================================
 Omnibus:                     2211.243   Durbin-Watson:                   1.419
 Prob(Omnibus):                  0.000   Jarque-Bera (JB):             4440.494
 Skew:                          -1.326   Prob(JB):                         0.00
-Kurtosis:                       4.907   Cond. No.                     2.96e+06
+Kurtosis:                       4.907   Cond. No.                     2.61e+06
 ==============================================================================
 
 Notes:
 [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-[2] The condition number is large, 2.96e+06. This might indicate that there are
+[2] The condition number is large, 2.61e+06. This might indicate that there are
 strong multicollinearity or other numerical problems.
