@@ -46,34 +46,22 @@ if __name__ == '__main__':
     #read the dataset
     df = pd.read_csv('data/locations_inspectionscores_forMeri_Feb.csv')
 
-    floodplain_data = df['in_floodplain']
-    score_data = df['INSPECTION_SCORE']
-
-    #scatter plot -- overall
-    plt.scatter(x=flood , y=score_data, s=1)
     
-    plt.title('Distance to Floodzone vs. Inspection Score in U.S')
-    plt.xlabel('Distance to floodzone')
+    #box plot -- overall
+    floodplain_data_df = df.loc[df['in_floodplain'] == 1.0]
+    floodplain_data = list(floodplain_data_df['INSPECTION_SCORE'])
+    non_floodplain_data_df = df.loc[df['in_floodplain'] == 0.0]
+    non_floodplain_data = list(non_floodplain_data_df['INSPECTION_SCORE']) 
+    data = [floodplain_data, non_floodplain_data]
+    sns.boxplot(data)
+    
+    plt.title('Is in floodplain or not vs. Inspection Score in U.S')
+    plt.xlabel('Is in floodplain or not')
     plt.ylabel('Inspection score')
-    
-    df = df.dropna()
+    plt.xticks([0, 1], ['in floodplain', 'not in floodplain'])
+    plt.savefig('figures/correlation/floodplain/score_vs_floodplain_overall.png')
 
-    X = df[['distance_to_floodzone']]
-    y = df['INSPECTION_SCORE']
-
-    model = LinearRegression()
-    model.fit(X, y)
-    #explicit parameters
-    # an array of coefficients
-    coef = model.coef_
-    #intercept 
-    intercept = model.intercept_
-
-    plt.plot(X, coef*X+intercept, color='red')
-
-    plt.savefig('figures/correlation/distance/score_vs_distance_overall.png')
-
-    #scatter plot -- fema region
+    #box plot -- fema region
     #update figure number from 0 to 1
     figure_number = 1
 
@@ -85,35 +73,27 @@ if __name__ == '__main__':
         temp_df = pd.DataFrame()
         for st in states:
             temp_df = pd.concat([temp_df, df.loc[df['STATE_NAME.x'] == st]], axis=0)
+            
+        temp_df = temp_df.dropna()
 
-        distance_data = temp_df['distance_to_floodzone']
-        score_data = temp_df['INSPECTION_SCORE']
+        floodplain_data_df = temp_df.loc[temp_df['in_floodplain'] == 1.0]
+        floodplain_data = list(floodplain_data_df['INSPECTION_SCORE'])
+        non_floodplain_data_df = temp_df.loc[temp_df['in_floodplain'] == 0.0]
+        non_floodplain_data = list(non_floodplain_data_df['INSPECTION_SCORE']) 
+        
+        region_data = [floodplain_data, non_floodplain_data]
+        print(region_data[0])
+
+        
 
         #use different figures to avoid superimposing
         plt.figure(f'{figure_number}')
         figure_number += 1
-        
-        #scatter plot -- overall
-        plt.scatter(x=distance_data, y=score_data, s=1)
-
-        plt.title(f'Distance to Floodzone vs. Inspection Score in FEMA {region}')
-        plt.xlabel('Distance to floodzone')
+        sns.boxplot(region_data)
+        plt.title(f'Is in floodplain or not vs. Inspection Score in FEMA{region}')
+        plt.xlabel('Is in floodplain or not')
         plt.ylabel('Inspection score')
-
-
-        #linear regression
-        X = temp_df[['distance_to_floodzone']]
-        y = temp_df['INSPECTION_SCORE']
-
-        model = LinearRegression()
-        model.fit(X, y)
-        #explicit parameters
-        # an array of coefficients
-        coef = model.coef_
-        #intercept 
-        intercept = model.intercept_
+        plt.xticks([0, 1], ['in floodplain', 'not in floodplain'])
         
-        plt.plot(X, coef*X+intercept, color='red')
-
         #save the plot
-        plt.savefig(f'figures/correlation/distance/score_vs_distance_FEMA{region}.png')
+        plt.savefig(f'figures/correlation/floodplain/score_vs_floodplain_FEMA{region}.png')
