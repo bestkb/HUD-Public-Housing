@@ -47,7 +47,7 @@ def in_region(df, region_list):
 if __name__ == '__main__':
     #read the dataset
     df = pd.read_csv('data/locations_inspectionscores_forMeri_Nov.csv')    
-    
+    final_df = pd.DataFrame()
     #inspection score data
     inspection_score = df['INSPECTION_SCORE']
     
@@ -104,7 +104,7 @@ if __name__ == '__main__':
         stat_writer.writerow(stats_each)
     
     stat_file.close()
-
+    region = 1
     #single point control of figure number
     figure_number = 0
 
@@ -115,10 +115,10 @@ if __name__ == '__main__':
         inspection_score_each = df.loc[df['inspection_year'] == yr]['INSPECTION_SCORE']
         another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
         median_years = pd.concat([median_years, another_year], axis=1)
-        print(median_years)
+        #print(median_years)
     plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
     plt.legend()
-    plt.show()
+    #plt.show()
     
     #update figure number from 0 to 1
     figure_number += 1
@@ -131,7 +131,7 @@ if __name__ == '__main__':
         temp_df = pd.DataFrame()
         for st in states:
             temp_df = pd.concat([temp_df, df.loc[df['STATE_NAME.x'] == st]], axis=0)
-            print(temp_df)
+        #print(temp_df)
 
         #ensure year data is available
         all_years_state = sorted(list(set(temp_df['inspection_year'].astype(np.int32))))
@@ -142,7 +142,7 @@ if __name__ == '__main__':
             inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
             another_year = pd.DataFrame({f'{yr}': [inspection_score_each.mean()]})
             mean_years = pd.concat([mean_years, another_year], axis=1)
-            print(mean_years)
+        #print(mean_years)
 
         #use different figures to avoid superimposing
         plt.figure(f'{figure_number}')
@@ -152,16 +152,22 @@ if __name__ == '__main__':
         plt.xlabel('time in years')
         plt.ylabel('inspection score')
         plt.title(f'inspection score over time in FEMA {region}')
-
+        actual_df = pd.DataFrame()
         #inspection scores changed over years  -- median as reference 
+
         median_years = pd.DataFrame()
         for yr in all_years_state:
             inspection_score_each = temp_df.loc[temp_df['inspection_year'] == yr]['INSPECTION_SCORE']
             another_year = pd.DataFrame({f'{yr}': [inspection_score_each.median()]})
             median_years = pd.concat([median_years, another_year], axis=1)
-            print(median_years)
-        plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label="median")
+            plt.plot(median_years.columns.to_list(), median_years.iloc[0, ], label=f"region{num}")
+
+        dataFrame = pd.DataFrame(data = median_years)
+        dataFrame['region'] = region
+        #print(dataFrame)
+        final_df = pd.concat([final_df, dataFrame], ignore_index=True)
         plt.legend()
         #footnote_text = f'{region} {[s for s in FEMA_MAP[region]]}'
         #plt.annotate(footnote_text, (0.5, -0.1), xycoords='axes fraction', ha='right', fontsize=8, color='gray')
-        plt.show()
+    print(final_df)
+    #plt.show()
