@@ -99,7 +99,7 @@ inspection_scores_w_flood <- inspection_scores %>%
 
 #removing puerto rico and territories
 inspection_scores_w_flood <- inspection_scores_w_flood %>%
-  filter(STATE_CODE <= 50)
+  filter(STATE_CODE <= 56)
 
 #extract year from Inpsection Date field 
 inspection_scores_2011 <- inspection_scores_w_flood %>%
@@ -137,7 +137,15 @@ inspection_flood_all <- inspection_scores_other %>%
   bind_rows(inspection_scores_2015) %>%
   bind_rows(inspection_scores_2020)
 
+
 #wrote as "data/all_inspscores_datecorrect.Rds"
+
+
+inspec_flood_all <- inspection_flood_all %>%
+  select(c(1,2, 6:14, 16, 19, 21:25))
+
+#write_csv(inspec_flood_all, "data/locations_inspectionscores_forMeri_Feb.csv")
+
 
 
 
