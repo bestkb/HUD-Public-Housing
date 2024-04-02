@@ -1,0 +1,32 @@
+overall inspection score:
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:       INSPECTION_SCORE   R-squared:                       0.057
+Model:                            OLS   Adj. R-squared:                  0.057
+Method:                 Least Squares   F-statistic:                     505.9
+Date:                Tue, 02 Apr 2024   Prob (F-statistic):               0.00
+Time:                        16:49:25   Log-Likelihood:            -1.7215e+05
+No. Observations:               42008   AIC:                         3.443e+05
+Df Residuals:                   42002   BIC:                         3.444e+05
+Df Model:                           5                                         
+Covariance Type:            nonrobust                                         
+=========================================================================================
+                            coef    std err          t      P>|t|      [0.025      0.975]
+-----------------------------------------------------------------------------------------
+const                    80.4777      0.445    180.736      0.000      79.605      81.350
+distance_to_floodzone  1.529e-06   3.62e-07      4.225      0.000     8.2e-07    2.24e-06
+age                      -0.0073      0.011     -0.636      0.525      -0.030       0.015
+white_percent            10.4174      0.268     38.864      0.000       9.892      10.943
+income                -4.647e-05   4.23e-06    -10.974      0.000   -5.48e-05   -3.82e-05
+renter                   -0.0027      0.000    -15.468      0.000      -0.003      -0.002
+==============================================================================
+Omnibus:                     6767.413   Durbin-Watson:                   0.817
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            10960.576
+Skew:                          -1.104   Prob(JB):                         0.00
+Kurtosis:                       4.178   Cond. No.                     1.30e+06
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.3e+06. This might indicate that there are
+strong multicollinearity or other numerical problems.

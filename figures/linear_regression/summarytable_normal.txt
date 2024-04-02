@@ -1,0 +1,30 @@
+overall inspection score:
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:       INSPECTION_SCORE   R-squared:                       0.057
+Model:                            OLS   Adj. R-squared:                  0.057
+Method:                 Least Squares   F-statistic:                     505.9
+Date:                Tue, 02 Apr 2024   Prob (F-statistic):               0.00
+Time:                        17:24:39   Log-Likelihood:            -1.7215e+05
+No. Observations:               42008   AIC:                         3.443e+05
+Df Residuals:                   42002   BIC:                         3.444e+05
+Df Model:                           5                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         81.6835      0.071   1148.831      0.000      81.544      81.823
+x1             0.3037      0.072      4.225      0.000       0.163       0.445
+x2            -0.0528      0.083     -0.636      0.525      -0.215       0.110
+x3             3.4482      0.089     38.864      0.000       3.274       3.622
+x4            -0.8749      0.080    -10.974      0.000      -1.031      -0.719
+x5            -1.1557      0.075    -15.468      0.000      -1.302      -1.009
+==============================================================================
+Omnibus:                     6767.413   Durbin-Watson:                   0.817
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            10960.576
+Skew:                          -1.104   Prob(JB):                         0.00
+Kurtosis:                       4.178   Cond. No.                         2.08
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

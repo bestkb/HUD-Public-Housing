@@ -1,0 +1,2 @@
+overall inspection score:
+INSPECTION_SCORE = 1.5293e-06*distance_to_floodzone + -7.3125e-03*age + 1.0417e+01*white_percent + -4.6472e-05*income + -2.6798e-03*renter + 80.4777
