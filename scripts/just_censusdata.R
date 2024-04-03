@@ -142,3 +142,8 @@ all_tract_demographics <- locations_only %>%
 #write_csv(all_tract_demographics, "data/tract_demographics_forMeri_Feb.csv")
 
 
+tract_vars <- read_csv("data/raw_tract_data.csv")
+
+
+regression_1 <- lm(income ~ total_white + age, data = tract_vars)
+summary(regression_1)

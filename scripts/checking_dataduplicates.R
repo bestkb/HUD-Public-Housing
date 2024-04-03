@@ -10,3 +10,13 @@ unique <- unique(look[c(1, 3:8, 17:19)])
 check_one <- unique %>%
   filter(DEVELOPMENT_ID == "LA130000001")
 
+
+## check combined data ##
+
+insp <- read_csv("data/locations_inspectionscores_w_tracts.csv")
+tract <- read_csv("data/raw_tract_data.csv")
+
+
+comb <- insp %>% left_join(tract, by = c("tract" = "GEOID", 
+                                         "inspection_year" = "year"))
+
