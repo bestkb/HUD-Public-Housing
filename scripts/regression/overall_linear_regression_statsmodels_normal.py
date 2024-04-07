@@ -14,9 +14,11 @@ if __name__ == "__main__":
     #distance to floodzone, age, percent white, income, renter
     df_merged["white_percent"] = df_merged["total_white"] / df_merged["total_pop"]
     
+    df_merged["renter_percent"] = df_merged["owner"] / df_merged["total_pop"] 
+
     #set up the regressors and target
-    final_df = df_merged[["distance_to_floodzone", "age", "white_percent", "income", "renter", "INSPECTION_SCORE"]]
-   
+    final_df = df_merged[["distance_to_floodzone", "age", "white_percent", "income", "renter_percent", "INSPECTION_SCORE"]]
+    
     #data cleaning
     final_df = final_df.dropna()
 
@@ -39,8 +41,3 @@ if __name__ == "__main__":
     equa_file.write("overall inspection score:\n")
     equa_file.write(str(results.summary()))
     equa_file.close()
-
-    #visualization: correlation matrix
-    sns.heatmap(final_df.corr(), cmap='Blues', annot=True)
-    plt.title('correlation matrix')
-    plt.show()
