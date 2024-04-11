@@ -171,5 +171,6 @@ if __name__ == '__main__':
         #footnote_text = f'{region} {[s for s in FEMA_MAP[region]]}'
         #plt.annotate(footnote_text, (0.5, -0.1), xycoords='axes fraction', ha='right', fontsize=8, color='gray')
     final_df.to_csv('data/dataframe.csv', index=False)
+    print(final_df)
     # harcoding
     #plt.show()
