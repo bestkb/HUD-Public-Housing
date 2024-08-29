@@ -20,3 +20,23 @@ tract <- read_csv("data/raw_tract_data.csv")
 comb <- insp %>% left_join(tract, by = c("tract" = "GEOID", 
                                          "inspection_year" = "year"))
 
+
+#going to try a spatial interpolation
+
+#2013-2020
+
+years <- unique(comb$inspection_year)
+
+
+
+check <- read_csv("data/combined_tract_level_April.csv")
+
+
+
+
+
+
+
+
+
+
