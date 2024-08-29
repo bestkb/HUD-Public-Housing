@@ -57,6 +57,42 @@ hud_w_flood7$census_code <- apply(hud_w_flood7, 1,
                                     call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
 
 
+##### earlier vintage #########
+########## pulling geocodes ################
+
+hud_w_flood_codes1$census_code <- apply(hud_w_flood_codes1, 1, 
+                                        function(row) 
+                                          call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+hud_w_flood2$census_code <- apply(hud_w_flood2, 1, 
+                                  function(row) 
+                                    call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+hud_w_flood3$census_code <- apply(hud_w_flood3, 1, 
+                                  function(row) 
+                                    call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+hud_w_flood4$census_code <- apply(hud_w_flood4, 1, 
+                                  function(row) 
+                                    call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+hud_w_flood5$census_code <- apply(hud_w_flood5, 1, 
+                                  function(row) 
+                                    call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+hud_w_flood6$census_code <- apply(hud_w_flood6, 1, 
+                                  function(row) 
+                                    call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+hud_w_flood6b1$census_code <- apply(hud_w_flood6b1, 1, 
+                                    function(row) 
+                                      call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+hud_w_flood6b2$census_code <- apply(hud_w_flood6b2, 1, 
+                                    function(row) 
+                                      call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+
+hud_w_flood7$census_code <- apply(hud_w_flood7, 1, 
+                                  function(row) 
+                                    call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
+
+
+
+
+
 
 census_codes_comb <- hud_w_flood_codes1 %>%
   bind_rows(hud_w_flood2) %>%
