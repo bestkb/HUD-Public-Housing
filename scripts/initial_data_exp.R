@@ -91,7 +91,7 @@ hud_w_flood$census_code <- apply(hud_w_flood, 1,
                                  function(row) 
                                    call_geolocator_latlon(row['LATITUDE'], row['LONGITUDE']))
 
-hud_w_flood$census_code <- as.character(hud_w_flood$census_code)
+jkhuyihud_w_flood$census_code <- as.character(hud_w_flood$census_code)
 hud_w_flood <- hud_w_flood %>%
   mutate(block_group = substr(census_code, 1, 12))
 
