@@ -7,9 +7,13 @@ library(tigris)
 
 ######## next step is to pull in block group census data from ACS ########
 
+<<<<<<< HEAD
 setwd(dirname(dirname(rstudioapi::getSourceEditorContext()$path)))
 
 insp_w_census <- read_csv("data/inspection_score_withcg.csv") %>%
+=======
+insp_w_census <- read_csv("data/locations_inspectionscores_forMeri_Feb.csv") %>%
+>>>>>>> 08d68705a5a167e7afd6a1d3c340c81a63ef68fc
   mutate(tract = substr(as.character(block_group), 1, 11))
 locations_only <- insp_w_census %>%
   select(c(1, 16, 17)) %>%
