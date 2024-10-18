@@ -1,0 +1,32 @@
+Overall inspection score (TRACT data):
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:       INSPECTION_SCORE   R-squared:                       0.059
+Model:                            OLS   Adj. R-squared:                  0.059
+Method:                 Least Squares   F-statistic:                     216.2
+Date:                Fri, 18 Oct 2024   Prob (F-statistic):          7.46e-313
+Time:                        12:51:08   Log-Likelihood:                -98914.
+No. Observations:               24215   AIC:                         1.978e+05
+Df Residuals:                   24207   BIC:                         1.979e+05
+Df Model:                           7                                         
+Covariance Type:            nonrobust                                         
+=======================================================================================
+                          coef    std err          t      P>|t|      [0.025      0.975]
+---------------------------------------------------------------------------------------
+const                  82.2665      0.092    890.053      0.000      82.085      82.448
+FloodDistM              0.3775      0.094      4.013      0.000       0.193       0.562
+in_floodplain          -0.5619      0.093     -6.073      0.000      -0.743      -0.381
+age_t                  -0.4436      0.119     -3.720      0.000      -0.677      -0.210
+white_percent_t         3.2582      0.132     24.705      0.000       3.000       3.517
+income_t               -1.2040      0.113    -10.632      0.000      -1.426      -0.982
+renter_percent_t        1.2649      0.151      8.396      0.000       0.970       1.560
+public_assistance_t     0.0012      0.100      0.012      0.990      -0.194       0.196
+==============================================================================
+Omnibus:                     4186.122   Durbin-Watson:                   1.348
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             7080.867
+Skew:                          -1.146   Prob(JB):                         0.00
+Kurtosis:                       4.329   Cond. No.                         3.16
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
