@@ -1,10 +1,10 @@
-library(sf)       # For handling spatial data
-library(ggplot2)  # For plotting
-library(dplyr)    # For data manipulation
+library(sf)
+library(ggplot2)
+library(dplyr)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(viridis)
-library(tigris)    # For county shapefiles
+library(tigris) 
 library(usmap)
 library(ggjoy)
 library(ggtext)
@@ -15,6 +15,7 @@ library(ggbeeswarm)
 library(tidycensus)
 library(tidyr)
 library(plm)
+library(readxl)
 
 setwd(dirname(dirname(rstudioapi::getSourceEditorContext()$path)))
 # options(scipen = 999)
@@ -24,29 +25,17 @@ inspection_score_uniq <- read.csv("data/inspection_scores_w_flood_033125.csv",he
 us_mainland <- ne_states(country = "United States of America", returnclass = "sf") %>%
   filter(!name %in% c("Hawaii", "Alaska"))
 
-shp <- st_read("data/floodplain.shp") 
-
 phd <- readr::read_csv("data/Public_Housing_Developments.csv")
-pha <- read.csv("data/Public_Housing_Authorities.csv")
-phb <- read.csv("data/Public_Housing_Buildings.csv")
-
 phd$PEOPLE_TOTAL[phd$PCT_OCCUPIED == 0] <- 0
 phd$PEOPLE_TOTAL[phd$PEOPLE_TOTAL < 0] <- NA
-
 
 mean_score <- mean(inspection_score_uniq$INSPECTION_SCORE, na.rm = TRUE)
 median_score <- median(inspection_score_uniq$INSPECTION_SCORE, na.rm = TRUE)
 n_score <- nrow(subset(inspection_score_uniq, !is.na(title)))
 
 bg_color <- "grey97"
-# font_import(prompt = FALSE)
 
-# Register fonts for Windows
-# loadfonts(device = "win")
-font_family <- "Arial"
-# plot_subtitle = glue("Inspection score from HUD in 2013-2019.
-# {scales::number(n_score, big.mark = ',')} data.")
-
+# Plot yearly distribution of inspection scores from 2013 to 2019
 p <- inspection_score_uniq %>% 
   ggplot(aes(year, INSPECTION_SCORE)) +
   stat_halfeye(fill_type = "segments", alpha = 0.3) +
@@ -55,20 +44,18 @@ p <- inspection_score_uniq %>%
   geom_hline(yintercept = median_score, col = "grey30", lty = "dashed") +
   scale_x_reverse(breaks = sort(unique(inspection_score_uniq$year)),
                      labels = sort(unique(inspection_score_uniq$year)))+
-  scale_y_reverse(breaks = c(0,30,60,90,100),labels = c(0,30,60,90,100)) +  # Reverse the y-axis
+  scale_y_reverse(breaks = c(0,30,60,90,100),labels = c(0,30,60,90,100)) + 
   scale_color_manual(values = MetBrewer::met.brewer("VanGogh3")) +
   coord_flip(ylim = c(0, 100), clip = "off") +
   guides(col = "none") +
   labs(
-    # title = toupper("Yearly inspection scores"),
-    # subtitle = plot_subtitle,
     x = "Year",
     y = "Inspection score"
   ) +
   theme_minimal() +
   theme(
-    plot.background = element_rect(color = NA, fill = "white"),  # Set plot background to white
-    panel.background = element_rect(color = NA, fill = "white"), # Set panel background to white
+    plot.background = element_rect(color = NA, fill = "white"), 
+    panel.background = element_rect(color = NA, fill = "white"),
     panel.grid = element_blank(),
     panel.grid.major.x = element_line(linewidth = 0.1, color = "grey75"),
     plot.title = element_text(),
@@ -79,38 +66,40 @@ p <- inspection_score_uniq %>%
       margin = margin(t = 12), size = 7
     ),
     plot.caption.position = "plot",
-    axis.text.y = element_text(size = 16), # Tick font size for y-axis
-    axis.text.x = element_text(size = 16,"black"),                                     # Tick font size for x-axis
-    axis.title.y = element_text(size = 20, margin = margin(r = 10)),           # Y-axis label size
-    axis.title.x = element_text(size = 20, margin = margin(t = 10)),           # X-axis label size
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16,"black"),        
+    axis.title.y = element_text(size = 20, margin = margin(r = 10)),   
+    axis.title.x = element_text(size = 20, margin = margin(t = 10)),    
     plot.margin = margin(4, 4, 4, 4)
   )
-ggsave("yearly_score.png",p,)
+ggsave("yearly_score.png",p)
 
-dat <- dat %>%
+# get inspection scores at the county level
+dat <- inspection_score_uniq %>%
   mutate(
-    state_formatted = sprintf("%02d", as.integer(STATE_CODE)),  # Convert state to 2-digit format
-    county_formatted = sprintf("%03d", as.integer(COUNTY_CODE)),# Convert county to 3-digit format
-    county = paste0(state_formatted, county_formatted) # Combine state and county
+    state_formatted = sprintf("%02d", as.integer(STATE_CODE)),
+    county_formatted = sprintf("%03d", as.integer(COUNTY_CODE)),
+    county = paste0(state_formatted, county_formatted)
   )
 
 
 county_units <- dat %>%
-  group_by(county) %>%                             # Group by county
-  summarise(uniq_count = n_distinct(paste(latitude, longitude)),
+  group_by(county) %>%    
+  summarise(uniq_count = n_distinct(paste(LATITUDE, LONGITUDE)),
             all_count = n())
 county_units$fips <- county_units$county
-county_insp <- inspection_score_uniq %>%
+county_insp <- dat %>%
   group_by(county) %>%
   summarize(score = mean(INSPECTION_SCORE, na.rm = TRUE),
             bad = sum(INSPECTION_SCORE < 60, na.rm = TRUE))
 county_insp$fips <- county_insp$county
+
 load("county_geom.RData")
 us_counties_units <- us_counties %>%
   left_join(county_units, by = c("GEOID" = "county"))
 
 county_dev <- phd %>%
-  group_by(COUNTY_LEVEL) %>%                             # Group by county
+  group_by(COUNTY_LEVEL) %>%      
   summarise(dev_count = n_distinct(paste(LAT, LON)),
             unit_count = sum(TOTAL_UNITS, na.rm = TRUE),
             resi_count = sum(PEOPLE_TOTAL, na.rm = TRUE))
@@ -122,10 +111,11 @@ df <- usmap_transform(inspection_score_uniq,input_names = c("LONGITUDE","LATITUD
 df <- st_as_sf(df)
 df <- df %>%
   mutate(
-    LONGITUDE = st_coordinates(geometry)[, 1],  # Extract longitude
-    LATITUDE = st_coordinates(geometry)[, 2]   # Extract latitude
+    LONGITUDE = st_coordinates(geometry)[, 1],
+    LATITUDE = st_coordinates(geometry)[, 2] 
   )
 
+# plot a map of mean inspection score
 map_score <- plot_usmap(
   regions = "counties",
   data = county_insp,
@@ -138,30 +128,30 @@ map_score <- plot_usmap(
     values = scales::rescale(c(0, 40, 80, 90, 100)),
     limits = c(0, 100),
     guide = guide_colorbar(
-      title.position = "top",              # Place title below colorbar
-      title.hjust = 0.5,                       # Center-align the title
-      barwidth = 10,                          # Make the colorbar wider
-      barheight = 1.5                         # Make the colorbar taller
+      title.position = "top",
+      title.hjust = 0.5, 
+      barwidth = 10,
+      barheight = 1.5 
     )
   ) +
   labs(
-    # title = "US County Map Based on Funds",
     fill = "Inspection score"
   ) +
   theme_minimal()+
   theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+    axis.text = element_blank(),  
+    axis.ticks = element_blank(), 
     axis.title = element_blank(),
     legend.position = c(0.8, 0.1),
     legend.direction = "horizontal",
-    legend.title = element_text(size = 16),   # Increase title font size
-    legend.text = element_text(size = 16)     # Increase label font size
+    legend.title = element_text(size = 16), 
+    legend.text = element_text(size = 16)
   )
 ggsave("map_score.png", map_score, width = 10,height = 6,dpi = 250)
 
+# plot a map of inspected unit #
 map_unit<- plot_usmap(
   regions = "counties",
   data = county_units,
@@ -170,37 +160,36 @@ map_unit<- plot_usmap(
   size = 0.0001
 ) +
   scale_fill_gradientn(
-    colors = c("red", "yellow", "darkgreen"),  # Custom colors
-    trans = "log",                             # Apply log transformation
-    breaks = c(1, 4, 16, 64, 256),       # Original values for colorbar
-    labels = c("1", "4", "16", "64", "256"), # Display original values as labels
+    colors = c("red", "yellow", "darkgreen"), 
+    trans = "log",  
+    breaks = c(1, 4, 16, 64, 256), 
+    labels = c("1", "4", "16", "64", "256"), 
     limits = c(1, 256),
     guide = guide_colorbar(
-      title.position = "top",              # Place title below colorbar
-      title.hjust = 0.5,                       # Center-align the title
-      barwidth = 10,                          # Make the colorbar wider
-      barheight = 1.5                         # Make the colorbar taller
+      title.position = "top",  
+      title.hjust = 0.5,  
+      barwidth = 10,       
+      barheight = 1.5    
     )
   ) +
-  # geom_point(data = df, aes(x = LONGITUDE, y = LATITUDE), color = "black", size = .2, shape = 16, alpha = 0.4) +
   labs(
-    # title = "US County Map Based on Funds",
     fill = "Inspected unit #"
   ) +
   theme_minimal()+
   theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text = element_blank(),  
+    axis.ticks = element_blank(),
     axis.title = element_blank(),
     legend.position = c(0.8, 0.1),
     legend.direction = "horizontal",
-    legend.title = element_text(size = 16),   # Increase title font size
-    legend.text = element_text(size = 16)     # Increase label font size
+    legend.title = element_text(size = 16), 
+    legend.text = element_text(size = 16)  
   )
 ggsave("map_unit2.png", map_unit, width = 10,height = 6,dpi = 250)
 
+# plot a map of total public housing units per county
 map_totunit2 <- plot_usmap(
   regions = "counties",
   data = county_dev,
@@ -213,46 +202,10 @@ map_totunit2 <- plot_usmap(
     values = scales::rescale(c(0, 1, 2, 3, 4, 5)),
     limits = c(0, 5),
     guide = guide_colorbar(
-      title.position = "top",              # Place title below colorbar
-      title.hjust = 0.5,                       # Center-align the title
-      barwidth = 10,                          # Make the colorbar wider
-      barheight = 1.5                         # Make the colorbar taller
-    )
-  ) +
-  labs(
-    # title = "US County Map Based on Funds",
-    fill = "Public housing units"
-  ) +
-  theme_minimal()+
-  theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
-    axis.title = element_blank(),
-    legend.position = c(0.8, 0.1),
-    legend.direction = "horizontal",
-    legend.title = element_text(size = 14),   # Increase title font size
-    legend.text = element_text(size = 10, angle = -45, hjust = 0)     # Increase label font size
-  )
-ggsave("map_tot_units_22.png", map_totunit2, width = 10,height = 6,dpi = 250)
-
-map_totunit3 <- plot_usmap(
-  regions = "counties",
-  data = county_dev,
-  values = "unit_count",
-  color = "white",
-  size = 0.00001
-) +
-  # Using a viridis palette
-  scale_fill_viridis_c(
-    option = "plasma", # Try "magma", "inferno", "cividis", "rocket", "mako"
-    limits = c(0, 2500),
-    guide = guide_colorbar(
-      title.position = "top",
-      title.hjust = 0.5,
-      barwidth = 10,
-      barheight = 1.5
+      title.position = "top",   
+      title.hjust = 0.5, 
+      barwidth = 10,  
+      barheight = 1.5  
     )
   ) +
   labs(
@@ -262,66 +215,23 @@ map_totunit3 <- plot_usmap(
   theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
-    axis.text = element_blank(),
-    axis.ticks = element_blank(),
+    axis.text = element_blank(),      
+    axis.ticks = element_blank(), 
     axis.title = element_blank(),
     legend.position = c(0.8, 0.1),
     legend.direction = "horizontal",
-    legend.title = element_text(size = 16),
-    legend.text = element_text(size = 16)
+    legend.title = element_text(size = 14), 
+    legend.text = element_text(size = 10, angle = -45, hjust = 0)  
   )
-ggsave("map_tot_units_viridis.png", map_totunit, width = 10,height = 6,dpi = 250)
-
-map_totresi <- plot_usmap(
-  regions = "counties",
-  data = county_dev,
-  values = "log_resi_count",
-  color = "white",
-  size = 0.0001
-) +
-  scale_fill_gradientn(
-    colors = c("firebrick4","red", "yellow", "green", "darkgreen"),
-    values = scales::rescale(c(0, 1, 2, 3, 4, 5)),
-    limits = c(0, 5),
-    guide = guide_colorbar(
-      title.position = "top",              # Place title below colorbar
-      title.hjust = 0.5,                       # Center-align the title
-      barwidth = 10,                          # Make the colorbar wider
-      barheight = 1.5                         # Make the colorbar taller
-    )
-  ) +
-  labs(
-    # title = "US County Map Based on Funds",
-    fill = "log(Public housing residents)"
-  ) +
-  theme_minimal()+
-  theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
-    axis.title = element_blank(),
-    legend.position = c(0.8, 0.1),
-    legend.direction = "horizontal",
-    legend.title = element_text(size = 16),   # Increase title font size
-    legend.text = element_text(size = 16)     # Increase label font size
-  )
-ggsave("map_tot_resi.png", map_totresi, width = 10,height = 6,dpi = 250)
-
-
-
-
-
+ggsave("map_tot_units_22.png", map_totunit2, width = 10,height = 6,dpi = 250)
 
 
 ##
-tract_dat1 <- read.csv("tract_dat2.csv")
-blockg_dat <- read.csv("block_dat.csv")
-# median_tract_dat <- tract_dat %>%
-#   select(c(age_t,pct_white,pov_color,year)) %>%
-#   group_by(year) %>%
-#   summarize(across(everything(),\(x) median(x, na.rm = TRUE)))
+# load tract-level and block-group-level data of median age, total pop, and total white pop, and year
+tract_dat1 <- read.csv("tract_dat2.csv") # not included in the github repo due to size
+blockg_dat <- read.csv("block_dat.csv") # not included in the github repo due to size
 
+# get national-level data
 median_tract_dat <- data.frame()
 for (i in 2013:2019){
     x <- get_acs(geography = "us",
@@ -350,15 +260,16 @@ for (i in 2013:2019){
                  geometry = FALSE)
     
     x2 <- x %>%
-      select(-moe) %>%  # Remove the `moe` column
+      select(-moe) %>% 
       pivot_wider(
-        names_from = variable,  # Columns will be created based on the `variable` column
-        values_from = estimate  # Values will come from `estimate` and `moe`
+        names_from = variable, 
+        values_from = estimate
       )
     
     x2$year <- i
     median_tract_dat <- rbind(median_tract_dat,x2)
 }
+
 median_tract_dat$poverty_color_t_median <- (median_tract_dat$poverty_black_t_median + median_tract_dat$poverty_hispanic_t_median)/median_tract_dat$total_pop_t_median
 median_tract_dat$pct_white_t_median <- median_tract_dat$total_white_b / median_tract_dat$total_pop_t_median
 median_tract_dat$pct_elderly_median <- (median_tract_dat$male_65_66 + median_tract_dat$male_67_69 + median_tract_dat$male_70_74 +
@@ -375,11 +286,6 @@ blockg_dat$pct_white <- blockg_dat$total_white_b / blockg_dat$total_pop_b
 blockg_dat <- blockg_dat[,c(1,6,7)]
 blockg_dat$GEOID <- as.numeric(blockg_dat$GEOID)
 
-# inspection_score_uniq2 <- inspection_score_uniq %>%
-#   left_join(tract_dat, by = c("tract" = "GEOID","year")) %>%
-#   left_join(blockg_dat, by = c("block_group" = "GEOID","year"))
-# inspection_score_uniq2 <- inspection_score_uniq2[inspection_score_uniq2$INSPECTION_SCORE > 0,]
-# inspection_score_uniq2$pct_white_b <- inspection_score_uniq2$total_white_b / inspection_score_uniq2$total_pop_b
 
 datt <- read_excel("./data/sample_dataset.xlsx")
 datt4 <- datt %>%
@@ -405,21 +311,21 @@ dat_badq_fl <- dat_badq_fl %>%
 
 dat_goodq <- usmap_transform(dat_goodq,input_names = c("longitude","latitude"))
 df_coords <- st_coordinates(dat_goodq)
-dat_goodq <- cbind(dat_goodq, df_coords)  # Add coordinates to the original dataframe
-colnames(dat_goodq)[ncol(dat_goodq)-2] <- "LONGITUDE"  # Rename columns
-colnames(dat_goodq)[ncol(dat_goodq)-1] <- "LATITUDE"  # Rename columns
+dat_goodq <- cbind(dat_goodq, df_coords) 
+colnames(dat_goodq)[ncol(dat_goodq)-2] <- "LONGITUDE" 
+colnames(dat_goodq)[ncol(dat_goodq)-1] <- "LATITUDE" 
 
 dat_badq_notfl <- usmap_transform(dat_badq_notfl,input_names = c("longitude","latitude"))
 df_coords <- st_coordinates(dat_badq_notfl)
-dat_badq_notfl <- cbind(dat_badq_notfl, df_coords)  # Add coordinates to the original dataframe
-colnames(dat_badq_notfl)[ncol(dat_badq_notfl)-2] <- "LONGITUDE"  # Rename columns
-colnames(dat_badq_notfl)[ncol(dat_badq_notfl)-1] <- "LATITUDE"  # Rename columns
+dat_badq_notfl <- cbind(dat_badq_notfl, df_coords) 
+colnames(dat_badq_notfl)[ncol(dat_badq_notfl)-2] <- "LONGITUDE"
+colnames(dat_badq_notfl)[ncol(dat_badq_notfl)-1] <- "LATITUDE"
 
 df_map <- usmap_transform(dat_badq_fl,input_names = c("longitude","latitude"))
 df_coords <- st_coordinates(df_map)
-df_map <- cbind(df_map, df_coords)  # Add coordinates to the original dataframe
-colnames(df_map)[ncol(df_map)-2] <- "LONGITUDE"  # Rename columns
-colnames(df_map)[ncol(df_map)-1] <- "LATITUDE"  # Rename columns
+df_map <- cbind(df_map, df_coords)
+colnames(df_map)[ncol(df_map)-2] <- "LONGITUDE"
+colnames(df_map)[ncol(df_map)-1] <- "LATITUDE" 
 
 df_badq_fl_age <- df_map[df_map$age_t_bad == 1,]
 df_badq_fl_pov <- df_map[df_map$poverty_t_bad == 1,]
@@ -431,16 +337,15 @@ unique_rows <- bind_rows(
   df_badq_fl_pov,
   df_badq_fl_white,
 ) %>%
-  distinct()  # Ensure uniqueness
+  distinct() 
 
 unique_rows <- unique_rows %>%
   mutate(combination = factor(paste(age_t_bad, poverty_t_bad, pct_white_bad, sep = "_"),
                               levels = c("1_1_0", "1_0_0","1_0_1", "1_1_1", "0_1_0", "0_1_1", "0_0_1","0_0_0")))
 
 df_count <- unique_rows %>%
-  # distinct(LATITUDE, LONGITUDE, combination) %>%  # Get unique rows
-  group_by(LATITUDE, LONGITUDE, development_id,development_name, year, inspection_score,combination) %>%  # Group by latitude, longitude, and combination
-  summarize(count = n(), .groups = "drop")  # Count number of observations
+  group_by(LATITUDE, LONGITUDE, development_id,development_name, year, inspection_score,combination) %>%  
+  summarize(count = n(), .groups = "drop") 
 
 p_age <- plot_usmap(
   regions = "states",
@@ -452,14 +357,12 @@ p_age <- plot_usmap(
   # geom_point(data = df_count, aes(x = LONGITUDE, y = LATITUDE, color = combination, size = count+5), shape = 16, alpha = 0.7) +
   geom_point(data = df_badq_fl_notdis, aes(x = LONGITUDE, y = LATITUDE),color = "green", size = 3, shape = 16, alpha = 1) +
   geom_point(data = df_badq_fl_age, aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 16, alpha = 1,fill = "red") +
-  # scale_size_continuous(range = c(3, 10)) + # Adjust range to set min and max sizes
   theme_minimal()+
-  # coord_sf(xlim = c(2001684, 2203928), ylim = c(-554899.78, 85344.95), expand = FALSE) +
   theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
     axis.title = element_blank(),
     legend.position = "none",
   )
@@ -474,14 +377,12 @@ p_pov <- plot_usmap(
   # geom_point(data = df_count, aes(x = LONGITUDE, y = LATITUDE, color = combination, size = count+5), shape = 16, alpha = 0.7) +
   geom_point(data = df_badq_fl_notdis, aes(x = LONGITUDE, y = LATITUDE),color = "green", size = 3, shape = 16, alpha = 1) +
   geom_point(data = df_badq_fl_pov, aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 25, alpha = 1,fill = "red") +
-  # scale_size_continuous(range = c(3, 10)) + # Adjust range to set min and max sizes
   theme_minimal()+
-  # coord_sf(xlim = c(2001684, 2203928), ylim = c(-554899.78, 85344.95), expand = FALSE) +
   theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    axis.text = element_blank(),        
+    axis.ticks = element_blank(),       
     axis.title = element_blank(),
     legend.position = "none",
   )
@@ -496,29 +397,27 @@ p_white <- plot_usmap(
   # geom_point(data = df_count, aes(x = LONGITUDE, y = LATITUDE, color = combination, size = count+5), shape = 16, alpha = 0.7) +
   geom_point(data = df_badq_fl_notdis, aes(x = LONGITUDE, y = LATITUDE),color = "green", size = 3, shape = 16, alpha = 1) +
   geom_point(data = df_badq_fl_white, aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 24, alpha = 1, fill = "red") +
-  # scale_size_continuous(range = c(3, 10)) + # Adjust range to set min and max sizes
   theme_minimal()+
-  # coord_sf(xlim = c(2001684, 2203928), ylim = c(-554899.78, 85344.95), expand = FALSE) +
   theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    axis.text = element_blank(),        
+    axis.ticks = element_blank(),       
     axis.title = element_blank(),
     legend.position = "none",
   )
 
-png("map_age_rev2.png", width = 3000, height = 2000,res = 300)  # Open a PNG device
+png("map_age_rev2.png", width = 3000, height = 2000,res = 300)  
 p_age
-dev.off()  # Close the device to save the file
+dev.off()  
 
-png("map_pov_rev2.png", width = 3000, height = 2000,res = 300)  # Open a PNG device
+png("map_pov_rev2.png", width = 3000, height = 2000,res = 300)  
 p_pov
-dev.off()  # Close the device to save the file
+dev.off()  
 
-png("map_white_rev2.png", width = 3000, height = 2000,res = 300)  # Open a PNG device
+png("map_white_rev2.png", width = 3000, height = 2000,res = 300)  
 p_white
-dev.off()  # Close the device to save the file
+dev.off()  
 
 
 p_nj <- plot_usmap(
@@ -535,10 +434,10 @@ p_nj <- plot_usmap(
   theme_minimal()+
   coord_sf(xlim = c(2001684, 2203928), ylim = c(-354899.78, -50000), expand = FALSE) +
   theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    axis.text = element_blank(),        
+    axis.ticks = element_blank(),       
     axis.title = element_blank(),
     legend.position = "none",
   )
@@ -566,9 +465,10 @@ df_badq_fl_pov2 <- dat_badq_fl2[dat_badq_fl2$poverty_t_bad == 1,]
 df_badq_fl_white2 <- dat_badq_fl2[dat_badq_fl2$pct_white_bad == 1,]
 df_badq_fl_notdis2 <- dat_badq_fl2[dat_badq_fl2$age_t_bad == 0 & dat_badq_fl2$poverty_t_bad == 0 & dat_badq_fl2$pct_white_bad == 0,]
 
+#######################
+####NJ and Hudson C####
+####Did not use########
 p_nj <- ggplot() +
-  # Add shapefile polygons with very light blue color
-  # geom_sf(data = shapefile_combined, fill = "lightblue", color = NA) +
   geom_sf(data = us_mainland, fill = "white", color = "black", linewidth = 0.3) +
   geom_point(data = dat_goodq2, aes(x = LONGITUDE, y = LATITUDE),color = "lightgray", size = 0.5, shape = 16, alpha = 1) +
   geom_point(data = dat_badq_notfl2, aes(x = LONGITUDE, y = LATITUDE),color = "blue", size = 1, shape = 16, alpha = 1) +
@@ -578,16 +478,16 @@ p_nj <- ggplot() +
   theme_minimal()+
   coord_sf(xlim = c(-75.6, -73.8), ylim = c(38.8, 41.4), expand = FALSE) +
   theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    axis.text = element_blank(),        
+    axis.ticks = element_blank(),       
     axis.title = element_blank(),
     legend.position = "none",
   )
-png("map_nj.png", width = 3000, height = 2000,res = 300)  # Open a PNG device
+png("map_nj.png", width = 3000, height = 2000,res = 300)  
 p_nj
-dev.off()  # Close the device to save the file
+dev.off()  
 
 
 p_hudson<- ggplot() +
@@ -603,19 +503,20 @@ p_hudson<- ggplot() +
   theme_minimal()+
   coord_sf(xlim = c(-74.06, -74.00), ylim = c(40.72, 40.77), expand = FALSE) +
   theme(
-    panel.grid.major = element_blank(), # Remove major grid lines
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_blank(),        # Remove axis text
-    axis.ticks = element_blank(),       # Remove axis ticks
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
+    axis.text = element_blank(),        
+    axis.ticks = element_blank(),       
     axis.title = element_blank(),
     legend.position = "none",
   )
 p_hudson
 
-png("map_hudson.png", width = 3000, height = 2000,res = 300)  # Open a PNG device
+png("map_hudson.png", width = 3000, height = 2000,res = 300)  
 p_hudson
-dev.off()  # Close the device to save the file
+dev.off()  
 
+###
 
 inspection_score_filtered <- dat %>%
   group_by(DEVELOPMENT_ID,latitude,longitude) %>%
@@ -643,8 +544,8 @@ ggplot(decay_rates, aes(x = factor(in_floodplain), y = decay_rate, fill = factor
   scale_fill_manual(values = c("red", "blue")) +  # Custom fill colors
   coord_cartesian(ylim = c(-15, 10)) +
   theme(
-    panel.grid.minor = element_blank(), # Remove minor grid lines
-    axis.text = element_text(size = 16),        # Remove axis text
+    panel.grid.minor = element_blank(), 
+    axis.text = element_text(size = 16),        
     axis.title = element_text(size = 16),
   )
 
