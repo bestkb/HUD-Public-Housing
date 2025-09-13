@@ -172,4 +172,24 @@ inspection_scores_final_nri <- inspection_scores_w_flood_demo %>%
 
 write.csv(inspection_scores_final_nri,"data/insp_score_flood_demo_nri.csv")
 
+#
+dat <- read_csv("data/insp_score_flood_demo_nri.csv")
+counties <- unique(dat$county)
+df_county <- data.frame(matrix(ncol = 11, nrow = length(counties)))
+rownames(df_county) <- counties
+colnames(df_county) <- c(2010:2020)
+for (i in 1:nrow(dat)){
+  yr <- dat$year[i]
+  ct <- dat$county[i]
+  df_county[which(counties == ct),yr-2009] <- 1
+}
 
+states <- unique(dat$STATE_CODE)
+df_state <- data.frame(matrix(ncol = 11, nrow = length(states)))
+rownames(df_state) <- states
+colnames(df_state) <- c(2010:2020)
+for (i in 1:nrow(dat)){
+  yr <- dat$year[i]
+  st <- dat$STATE_CODE[i]
+  df_state[which(states == st),yr-2009] <- 1
+}

@@ -1,0 +1,422 @@
+﻿STATE,COUNTY
+Alabama,Baldwin
+Alabama,Clarke
+Alabama,Mobile
+Alabama,Monroe
+Alabama,Washington
+Alaska,Anchorage
+Alaska,Chugach
+Alaska,Dillingham
+Alaska,Hoonah-Angoon
+Alaska,Juneau
+Alaska,Kenai Peninsula
+Alaska,Nome
+Alaska,Northwest Arctic
+Alaska,Petersburg
+Alaska,Sitka
+Alaska,Wrangell
+California,Alameda
+California,Contra Costa
+California,Del Norte
+California,Humboldt
+California,Los Angeles
+California,Marin
+California,Mendocino
+California,Monterey
+California,Napa
+California,Orange
+California,San Diego
+California,San Francisco
+California,San Luis Obispo
+California,San Mateo
+California,Santa Barbara
+California,Santa Clara
+California,Santa Cruz
+California,Solano
+California,Sonoma
+California,Ventura
+Connecticut,Fairfield
+Connecticut,Hartford
+Connecticut,Middlesex
+Connecticut,New Haven
+Connecticut,New London
+Delaware,Kent
+Delaware,New Castle
+Delaware,Sussex
+District of Columbia,District of Columbia
+Florida,Bay
+Florida,Brevard
+Florida,Broward
+Florida,Calhoun
+Florida,Charlotte
+Florida,Citrus
+Florida,Clay
+Florida,Collier
+Florida,DeSoto
+Florida,Dixie
+Florida,Duval
+Florida,Escambia
+Florida,Flagler
+Florida,Franklin
+Florida,Gilchrist
+Florida,Glades
+Florida,Gulf
+Florida,Hardee
+Florida,Hendry
+Florida,Hernando
+Florida,Hillsborough
+Florida,Indian River
+Florida,Jefferson
+Florida,Lafayette
+Florida,Lake
+Florida,Lee
+Florida,Leon
+Florida,Levy
+Florida,Liberty
+Florida,Manatee
+Florida,Marion
+Florida,Martin
+Florida,Miami-Dade
+Florida,Monroe
+Florida,Nassau
+Florida,Okaloosa
+Florida,Palm Beach
+Florida,Pasco
+Florida,Pinellas
+Florida,Putnam
+Florida,St. Johns
+Florida,St. Lucie
+Florida,Santa Rosa
+Florida,Sarasota
+Florida,Suwannee
+Florida,Taylor
+Florida,Volusia
+Florida,Wakulla
+Florida,Walton
+Florida,Washington
+Georgia,Brantley
+Georgia,Bryan
+Georgia,Camden
+Georgia,Charlton
+Georgia,Chatham
+Georgia,Effingham
+Georgia,Glynn
+Georgia,Liberty
+Georgia,Long
+Georgia,McIntosh
+Georgia,Wayne
+Hawaii,Hawaii
+Hawaii,Honolulu
+Hawaii,Kalawao
+Hawaii,Kauai
+Hawaii,Maui
+Illinois,Cook
+Illinois,Lake
+Indiana,Lake
+Indiana,LaPorte
+Indiana,Porter
+Louisiana,Acadia
+Louisiana,Allen
+Louisiana,Ascension
+Louisiana,Assumption
+Louisiana,Beauregard
+Louisiana,Calcasieu
+Louisiana,Cameron
+Louisiana,East Baton Rouge
+Louisiana,Iberia
+Louisiana,Iberville
+Louisiana,Jefferson
+Louisiana,Jefferson Davis
+Louisiana,Lafayette
+Louisiana,Lafourche
+Louisiana,Livingston
+Louisiana,Orleans
+Louisiana,Plaquemines
+Louisiana,Pointe Coupee
+Louisiana,St. Bernard
+Louisiana,St. Charles
+Louisiana,St. James
+Louisiana,St. John the Baptist
+Louisiana,St. Landry
+Louisiana,St. Martin
+Louisiana,St. Mary
+Louisiana,St. Tammany
+Louisiana,Tangipahoa
+Louisiana,Terrebonne
+Louisiana,Vermilion
+Louisiana,West Baton Rouge
+Maine,Cumberland
+Maine,Hancock
+Maine,Kennebec
+Maine,Knox
+Maine,Lincoln
+Maine,Penobscot
+Maine,Sagadahoc
+Maine,Waldo
+Maine,Washington
+Maine,York
+Maryland,Anne Arundel
+Maryland,Baltimore
+Maryland,Calvert
+Maryland,Caroline
+Maryland,Cecil
+Maryland,Charles
+Maryland,Dorchester
+Maryland,Harford
+Maryland,Howard
+Maryland,Kent
+Maryland,Montgomery
+Maryland,Prince George's
+Maryland,Queen Anne's
+Maryland,St. Mary's
+Maryland,Somerset
+Maryland,Talbot
+Maryland,Wicomico
+Maryland,Worcester
+Massachusetts,Barnstable
+Massachusetts,Bristol
+Massachusetts,Dukes
+Massachusetts,Essex
+Massachusetts,Middlesex
+Massachusetts,Nantucket
+Massachusetts,Norfolk
+Massachusetts,Plymouth
+Massachusetts,Suffolk
+Michigan,Alcona
+Michigan,Allegan
+Michigan,Alpena
+Michigan,Arenac
+Michigan,Bay
+Michigan,Benzie
+Michigan,Berrien
+Michigan,Charlevoix
+Michigan,Cheboygan
+Michigan,Chippewa
+Michigan,Emmet
+Michigan,Grand Traverse
+Michigan,Huron
+Michigan,Iosco
+Michigan,Leelanau
+Michigan,Macomb
+Michigan,Manistee
+Michigan,Marquette
+Michigan,Mason
+Michigan,Menominee
+Michigan,Monroe
+Michigan,Muskegon
+Michigan,Oceana
+Michigan,Ottawa
+Michigan,Presque Isle
+Michigan,St. Clair
+Michigan,Sanilac
+Michigan,Tuscola
+Michigan,Van Buren
+Michigan,Wayne
+Mississippi,George
+Mississippi,Hancock
+Mississippi,Harrison
+Mississippi,Jackson
+Mississippi,Pearl River
+New Hampshire,Rockingham
+New Hampshire,Strafford
+New Jersey,Atlantic
+New Jersey,Bergen
+New Jersey,Burlington
+New Jersey,Camden
+New Jersey,Cape May
+New Jersey,Cumberland
+New Jersey,Essex
+New Jersey,Gloucester
+New Jersey,Hudson
+New Jersey,Mercer
+New Jersey,Middlesex
+New Jersey,Monmouth
+New Jersey,Ocean
+New Jersey,Passaic
+New Jersey,Salem
+New Jersey,Somerset
+New Jersey,Union
+New York,Albany
+New York,Bronx
+New York,Cayuga
+New York,Chautauqua
+New York,Dutchess
+New York,Erie
+New York,Greene
+New York,Jefferson
+New York,Kings
+New York,Monroe
+New York,Nassau
+New York,New York
+New York,Niagara
+New York,Orange
+New York,Oswego
+New York,Putnam
+New York,Queens
+New York,Richmond
+New York,Rockland
+New York,Suffolk
+New York,Ulster
+New York,Wayne
+New York,Westchester
+North Carolina,Beaufort
+North Carolina,Bertie
+North Carolina,Bladen
+North Carolina,Brunswick
+North Carolina,Camden
+North Carolina,Carteret
+North Carolina,Chowan
+North Carolina,Columbus
+North Carolina,Craven
+North Carolina,Currituck
+North Carolina,Dare
+North Carolina,Gates
+North Carolina,Greene
+North Carolina,Hertford
+North Carolina,Hyde
+North Carolina,Jones
+North Carolina,Lenoir
+North Carolina,Martin
+North Carolina,New Hanover
+North Carolina,Northampton
+North Carolina,Onslow
+North Carolina,Pamlico
+North Carolina,Pasquotank
+North Carolina,Pender
+North Carolina,Perquimans
+North Carolina,Pitt
+North Carolina,Tyrrell
+North Carolina,Washington
+Ohio,Ashtabula
+Ohio,Cuyahoga
+Ohio,Erie
+Ohio,Lake
+Ohio,Lorain
+Ohio,Lucas
+Ohio,Sandusky
+Oregon,Clackamas
+Oregon,Clatsop
+Oregon,Columbia
+Oregon,Coos
+Oregon,Curry
+Oregon,Douglas
+Oregon,Lane
+Oregon,Lincoln
+Oregon,Multnomah
+Oregon,Tillamook
+Pennsylvania,Bucks
+Pennsylvania,Delaware
+Pennsylvania,Erie
+Pennsylvania,Philadelphia
+Rhode Island,Bristol
+Rhode Island,Kent
+Rhode Island,Newport
+Rhode Island,Providence
+Rhode Island,Washington
+South Carolina,Beaufort
+South Carolina,Berkeley
+South Carolina,Charleston
+South Carolina,Colleton
+South Carolina,Dorchester
+South Carolina,Georgetown
+South Carolina,Hampton
+South Carolina,Horry
+South Carolina,Jasper
+South Carolina,Marion
+South Carolina,Williamsburg
+Texas,Aransas
+Texas,Brazoria
+Texas,Calhoun
+Texas,Cameron
+Texas,Chambers
+Texas,Fort Bend
+Texas,Galveston
+Texas,Hardin
+Texas,Harris
+Texas,Jackson
+Texas,Jasper
+Texas,Jefferson
+Texas,Kleberg
+Texas,Liberty
+Texas,Matagorda
+Texas,Newton
+Texas,Nueces
+Texas,Orange
+Texas,Refugio
+Texas,San Patricio
+Texas,Victoria
+Texas,Willacy
+Virginia,Accomack
+Virginia,Arlington
+Virginia,Caroline
+Virginia,Charles City
+Virginia,Chesterfield
+Virginia,Essex
+Virginia,Fairfax
+Virginia,Gloucester
+Virginia,Hanover
+Virginia,Henrico
+Virginia,Isle of Wight
+Virginia,James City
+Virginia,King and Queen
+Virginia,King George
+Virginia,King William
+Virginia,Lancaster
+Virginia,Mathews
+Virginia,Middlesex
+Virginia,New Kent
+Virginia,Northampton
+Virginia,Northumberland
+Virginia,Prince George
+Virginia,Prince William
+Virginia,Richmond
+Virginia,Southampton
+Virginia,Spotsylvania
+Virginia,Stafford
+Virginia,Surry
+Virginia,Westmoreland
+Virginia,York
+Virginia,Alexandria
+Virginia,Chesapeake
+Virginia,Colonial Heights
+Virginia,Franklin
+Virginia,Fredericksburg
+Virginia,Hampton
+Virginia,Hopewell
+Virginia,Newport News
+Virginia,Norfolk
+Virginia,Petersburg
+Virginia,Poquoson
+Virginia,Portsmouth
+Virginia,Suffolk
+Virginia,Virginia Beach
+Virginia,Williamsburg
+Washington,Clallam
+Washington,Clark
+Washington,Cowlitz
+Washington,Grays Harbor
+Washington,Island
+Washington,Jefferson
+Washington,King
+Washington,Kitsap
+Washington,Mason
+Washington,Pacific
+Washington,Pierce
+Washington,San Juan
+Washington,Skagit
+Washington,Skamania
+Washington,Snohomish
+Washington,Thurston
+Washington,Wahkiakum
+Washington,Whatcom
+Wisconsin,Bayfield
+Wisconsin,Brown
+Wisconsin,Door
+Wisconsin,Douglas
+Wisconsin,Kenosha
+Wisconsin,Kewaunee
+Wisconsin,Milwaukee
+Wisconsin,Oconto
+Wisconsin,Ozaukee
+Wisconsin,Racine
+Wisconsin,Sheboygan

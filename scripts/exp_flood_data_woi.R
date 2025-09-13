@@ -126,40 +126,6 @@ print(paste("Rows with NAs : ",(sum(rowSums(is.na(inspection_scores_w_flood_demo
 # the row numbers are still 9239 meaning that using different block IDs did not really work
 # save.image("before_interpolate.RData")
 
-# # kriging
-# # clean dat
-# dat <- inspection_scores_w_flood_demo
-# dat_list <- list()
-# for (i in 1:12){
-#   int <- dat[,c(9,10,13,(i+22))]
-#   coordinates(int) <- ~LONGITUDE + LATITUDE  # Define spatial coordinates
-#   int$time <- as.POSIXct(paste(int$year, "-01-01", sep=""))  # Convert year to time format
-#   years_seq <- seq(min(int$year), max(int$year), by = 1)  # Define the time steps
-#   grid <- expand.grid(
-#     LONGITUDE = seq(min(int$LONGITUDE), max(int$LONGITUDE), length.out = 10),  # Adjust spatial resolution
-#     LATITUDE = seq(min(int$LATITUDE), max(int$LATITUDE), length.out = 10),
-#     year = years_seq
-#   )
-#   coordinates(grid) <- ~LONGITUDE + LATITUDE
-#   grid$time <- as.POSIXct(paste(grid$year, "-01-01", sep=""))
-#   
-#   int_no_na <- int[!is.na(int$age_c), ]
-#   vgm_model <- gstat::variogram(age_c ~ 1, int_no_na)
-#   
-#   # Fit a variogram model (e.g., Spherical, Exponential)
-#   fit_model <- gstat::fit.variogram(vgm_model, model = vgm("Sph"))
-#   
-#   int_na <- int[is.na(int$age_c), ]
-#   
-#   kriging_result <- gstat::krige(age_c ~ 1, int[!is.na(int$age_c), ], int_na, model = fit_model)
-#   
-#   # Extract the predicted values (var1.pred contains the predictions)
-#   predicted_values <- kriging_result$var1.pred
-#   
-#   
-# }
-
-
 
 # Get the mean of county
 inspection_scores_w_flood_demo_noNA <- inspection_scores_w_flood_demo[rowSums(is.na(inspection_scores_w_flood_demo)) == 0,]
