@@ -289,20 +289,47 @@ blockg_dat$GEOID <- as.numeric(blockg_dat$GEOID)
 
 
 datt <- read_excel("./data/sample_dataset.xlsx")
-datt4 <- datt %>%
-  left_join(datt2[,c(1,85,86)], by = c("v1" = "X"))
+# datt4 <- datt %>%
+#   left_join(datt2[,c(1,85,86)], by = c("v1" = "X"))
 datt <- datt[datt$inspection_score > 0 ,]
 datt$pov_color <- (datt$poverty_black_t2 + datt$poverty_hispanic_t2)/datt$total_pop_t
 datt$pct_white <- datt$total_white_b / datt$total_pop_b
-inspection_score_uniq2 <- datt
+inspection_score_uniq2 <- datt %>%
+  mutate(
+    longitude = as.numeric(str_remove(geometry, "c\\(")),  # remove "c("
+    latitude = as.numeric(str_remove(v86, "\\)"))         # remove ")"
+  )
 
 dat_goodq <- inspection_score_uniq2[inspection_score_uniq2$inspection_score >= 60,]
 dat_badq <- inspection_score_uniq2[inspection_score_uniq2$inspection_score < 60,]
 
-dat_badq_fl <- dat_badq[dat_badq$in_floodplain == 1,]
-dat_badq_notfl <- dat_badq[dat_badq$in_floodplain == 0,]
+dat_badq_fl <- dat_badq[dat_badq$cf_riskscore_t2 >= 99.65598 | dat_badq$rf_riskscore_t2 >= 98.54564,]
+dat_badq_notfl <- dat_badq[dat_badq$cf_riskscore_t2 < 99.65598 & dat_badq$rf_riskscore_t2 < 98.54564,]
+
+dat_badq_fl_cf <- dat_badq[dat_badq$cf_riskscore_t2 >= 99.65598,]
+dat_badq_notfl_cf <- dat_badq[dat_badq$cf_riskscore_t2 < 99.65598,]
+
+dat_badq_fl_rf <- dat_badq[dat_badq$rf_riskscore_t2 >= 98.54564,]
+dat_badq_notfl_rf <- dat_badq[dat_badq$rf_riskscore_t2 < 98.54564,]
+
 
 dat_badq_fl <- dat_badq_fl %>%
+  left_join(median_tract_dat,by = "year") %>%
+  mutate(
+    age_t_bad = ifelse(elderly_pct > pct_elderly_median, 1, 0),
+    poverty_t_bad = ifelse(pct_poor_color > poverty_color_t_median, 1, 0),
+    pct_white_bad = ifelse(pct_white < pct_white_t_median, 1, 0),
+  )
+
+dat_badq_fl_cf <- dat_badq_fl_cf %>%
+  left_join(median_tract_dat,by = "year") %>%
+  mutate(
+    age_t_bad = ifelse(elderly_pct > pct_elderly_median, 1, 0),
+    poverty_t_bad = ifelse(pct_poor_color > poverty_color_t_median, 1, 0),
+    pct_white_bad = ifelse(pct_white < pct_white_t_median, 1, 0),
+  )
+
+dat_badq_fl_rf <- dat_badq_fl_rf %>%
   left_join(median_tract_dat,by = "year") %>%
   mutate(
     age_t_bad = ifelse(elderly_pct > pct_elderly_median, 1, 0),
@@ -328,10 +355,32 @@ df_map <- cbind(df_map, df_coords)
 colnames(df_map)[ncol(df_map)-2] <- "LONGITUDE"
 colnames(df_map)[ncol(df_map)-1] <- "LATITUDE" 
 
+df_map_cf <- usmap_transform(dat_badq_fl_cf,input_names = c("longitude","latitude"))
+df_coords_cf <- st_coordinates(df_map_cf)
+df_map_cf <- cbind(df_map_cf, df_coords_cf)
+colnames(df_map_cf)[ncol(df_map_cf)-2] <- "LONGITUDE"
+colnames(df_map_cf)[ncol(df_map_cf)-1] <- "LATITUDE" 
+
+df_map_rf <- usmap_transform(dat_badq_fl_rf,input_names = c("longitude","latitude"))
+df_coords_rf <- st_coordinates(df_map_rf)
+df_map_rf <- cbind(df_map_rf, df_coords_rf)
+colnames(df_map_rf)[ncol(df_map_rf)-2] <- "LONGITUDE"
+colnames(df_map_rf)[ncol(df_map_rf)-1] <- "LATITUDE" 
+
 df_badq_fl_age <- df_map[df_map$age_t_bad == 1,]
 df_badq_fl_pov <- df_map[df_map$poverty_t_bad == 1,]
 df_badq_fl_white <- df_map[df_map$pct_white_bad == 1,]
 df_badq_fl_notdis <- df_map[df_map$age_t_bad == 0 & df_map$poverty_t_bad == 0 & df_map$pct_white_bad == 0,]
+
+df_badq_fl_age_cf <- df_map_cf[df_map_cf$age_t_bad == 1,]
+df_badq_fl_pov_cf <- df_map_cf[df_map_cf$poverty_t_bad == 1,]
+df_badq_fl_white_cf <- df_map_cf[df_map_cf$pct_white_bad == 1,]
+df_badq_fl_notdis_cf <- df_map_cf[df_map_cf$age_t_bad == 0 & df_map_cf$poverty_t_bad == 0 & df_map_cf$pct_white_bad == 0,]
+
+df_badq_fl_age_rf <- df_map_rf[df_map_rf$age_t_bad == 1,]
+df_badq_fl_pov_rf <- df_map_rf[df_map_rf$poverty_t_bad == 1,]
+df_badq_fl_white_rf <- df_map_rf[df_map_rf$pct_white_bad == 1,]
+df_badq_fl_notdis_rf <- df_map_rf[df_map_rf$age_t_bad == 0 & df_map_rf$poverty_t_bad == 0 & df_map_rf$pct_white_bad == 0,]
 
 unique_rows <- bind_rows(
   df_badq_fl_age,
@@ -341,6 +390,28 @@ unique_rows <- bind_rows(
   distinct() 
 
 unique_rows <- unique_rows %>%
+  mutate(combination = factor(paste(age_t_bad, poverty_t_bad, pct_white_bad, sep = "_"),
+                              levels = c("1_1_0", "1_0_0","1_0_1", "1_1_1", "0_1_0", "0_1_1", "0_0_1","0_0_0")))
+
+unique_rows_cf <- bind_rows(
+  df_badq_fl_age_cf,
+  df_badq_fl_pov_cf,
+  df_badq_fl_white_cf,
+) %>%
+  distinct() 
+
+unique_rows_cf <- unique_rows_cf %>%
+  mutate(combination = factor(paste(age_t_bad, poverty_t_bad, pct_white_bad, sep = "_"),
+                              levels = c("1_1_0", "1_0_0","1_0_1", "1_1_1", "0_1_0", "0_1_1", "0_0_1","0_0_0")))
+
+unique_rows_rf <- bind_rows(
+  df_badq_fl_age_rf,
+  df_badq_fl_pov_rf,
+  df_badq_fl_white_rf,
+) %>%
+  distinct() 
+
+unique_rows_rf <- unique_rows_rf %>%
   mutate(combination = factor(paste(age_t_bad, poverty_t_bad, pct_white_bad, sep = "_"),
                               levels = c("1_1_0", "1_0_0","1_0_1", "1_1_1", "0_1_0", "0_1_1", "0_0_1","0_0_0")))
 
@@ -357,7 +428,53 @@ p_age <- plot_usmap(
   geom_point(data = dat_badq_notfl, aes(x = LONGITUDE, y = LATITUDE),color = "blue", size = 1, shape = 16, alpha = 1) +
   # geom_point(data = df_count, aes(x = LONGITUDE, y = LATITUDE, color = combination, size = count+5), shape = 16, alpha = 0.7) +
   geom_point(data = df_badq_fl_notdis, aes(x = LONGITUDE, y = LATITUDE),color = "green", size = 3, shape = 16, alpha = 1) +
-  geom_point(data = df_badq_fl_age, aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 16, alpha = 1,fill = "red") +
+  geom_point(data = df_badq_fl_age[df_badq_fl_age$age_t_bad == 1 & df_badq_fl_age$poverty_t_bad == 1 & df_badq_fl_age$pct_white_bad == 1,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 16, alpha = 1,fill = "red") +
+  geom_point(data = df_badq_fl_age[df_badq_fl_age$age_t_bad == 1 & df_badq_fl_age$poverty_t_bad == 1 & df_badq_fl_age$pct_white_bad == 0,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 25, alpha = 1,fill = "red") +
+  geom_point(data = df_badq_fl_age[df_badq_fl_age$age_t_bad == 1 & df_badq_fl_age$poverty_t_bad == 0 & df_badq_fl_age$pct_white_bad == 0,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 24, alpha = 1,fill = "red") +
+  theme_minimal()+
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none",
+  )
+
+p_age_cf <- plot_usmap(
+  regions = "states",
+  color = "black",
+  size = 0.1
+) +
+  geom_point(data = dat_goodq, aes(x = LONGITUDE, y = LATITUDE),color = "lightgray", size = 0.5, shape = 16, alpha = 1) +
+  geom_point(data = dat_badq_notfl, aes(x = LONGITUDE, y = LATITUDE),color = "blue", size = 1, shape = 16, alpha = 1) +
+  # geom_point(data = df_count, aes(x = LONGITUDE, y = LATITUDE, color = combination, size = count+5), shape = 16, alpha = 0.7) +
+  geom_point(data = df_badq_fl_notdis, aes(x = LONGITUDE, y = LATITUDE),color = "green", size = 3, shape = 16, alpha = 1) +
+  geom_point(data = df_badq_fl_age_cf[df_badq_fl_age_cf$age_t_bad == 1 & df_badq_fl_age_cf$poverty_t_bad == 1 & df_badq_fl_age_cf$pct_white_bad == 1,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 16, alpha = 1,fill = "red") +
+  geom_point(data = df_badq_fl_age_cf[df_badq_fl_age_cf$age_t_bad == 1 & df_badq_fl_age_cf$poverty_t_bad == 1 & df_badq_fl_age_cf$pct_white_bad == 0,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 25, alpha = 1,fill = "red") +
+  geom_point(data = df_badq_fl_age_cf[df_badq_fl_age_cf$age_t_bad == 1 & df_badq_fl_age_cf$poverty_t_bad == 0 & df_badq_fl_age_cf$pct_white_bad == 0,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 24, alpha = 1,fill = "red") +
+  theme_minimal()+
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    legend.position = "none",
+  )
+
+p_age_rf <- plot_usmap(
+  regions = "states",
+  color = "black",
+  size = 0.1
+) +
+  geom_point(data = dat_goodq, aes(x = LONGITUDE, y = LATITUDE),color = "lightgray", size = 0.5, shape = 16, alpha = 1) +
+  geom_point(data = dat_badq_notfl, aes(x = LONGITUDE, y = LATITUDE),color = "blue", size = 1, shape = 16, alpha = 1) +
+  # geom_point(data = df_count, aes(x = LONGITUDE, y = LATITUDE, color = combination, size = count+5), shape = 16, alpha = 0.7) +
+  geom_point(data = df_badq_fl_notdis, aes(x = LONGITUDE, y = LATITUDE),color = "green", size = 3, shape = 16, alpha = 1) +
+  geom_point(data = df_badq_fl_age_rf[df_badq_fl_age_rf$age_t_bad == 1 & df_badq_fl_age_rf$poverty_t_bad == 1 & df_badq_fl_age_rf$pct_white_bad == 1,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 16, alpha = 1,fill = "red") +
+  geom_point(data = df_badq_fl_age_rf[df_badq_fl_age_rf$age_t_bad == 1 & df_badq_fl_age_rf$poverty_t_bad == 1 & df_badq_fl_age_rf$pct_white_bad == 0,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 25, alpha = 1,fill = "red") +
+  geom_point(data = df_badq_fl_age_rf[df_badq_fl_age_rf$age_t_bad == 1 & df_badq_fl_age_rf$poverty_t_bad == 0 & df_badq_fl_age_rf$pct_white_bad == 0,], aes(x = LONGITUDE, y = LATITUDE),color = "red", size = 3, shape = 24, alpha = 1,fill = "red") +
   theme_minimal()+
   theme(
     panel.grid.major = element_blank(),
@@ -408,8 +525,16 @@ p_white <- plot_usmap(
     legend.position = "none",
   )
 
-png("map_age_rev2.png", width = 3000, height = 2000,res = 300)  
+png("map_age_tot.png", width = 3000, height = 2000,res = 300)  
 p_age
+dev.off()  
+
+png("map_age_tot_cf.png", width = 3000, height = 2000,res = 300)  
+p_age_cf
+dev.off()  
+
+png("map_age_tot_rf.png", width = 3000, height = 2000,res = 300)  
+p_age_rf
 dev.off()  
 
 png("map_pov_rev2.png", width = 3000, height = 2000,res = 300)  
